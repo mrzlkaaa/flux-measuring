@@ -5,6 +5,7 @@
 	{% block content %}
 		<form method="POST", enctype="multipart/form-data"> 
 			<div class='main-box'>
+				<div style="margin:auto; text-align: center;">NAME OF EXPERIMENT </div>
 				<div class="card text-center">
 				  <div class="card-header">
 				    Setting up of foil
@@ -13,6 +14,17 @@
 				    <h5 class="card-title">Fill the foms below</h5> <br>
 					<!--* add container here -->
 					<div class="container">
+						<div class="row">
+							<div class="col" style="width:50%">
+								<label for="Id" class="form-label">ID</label>
+								<input name="Id" class="form-control" type="number" step="1">
+							  </div>
+							<div class="col" style="width:50%">
+							  <label for="Area" class="form-label">Area</label>
+							  <input name="Area" class="form-control" type="number" step="1">
+							</div>
+						</div>
+						<br>
 						<div class="row">
 						  <div class="col" style="width:50%">
 							<label for="Irr-started" class="form-label">Irradiation started</label>
@@ -32,17 +44,6 @@
 							<div class="col" style="width:50%">
 								<label for="Meas-time" class="form-label">Measuring time</label>
 								<input name="Meas-time" class="form-control" type="number" step="1">
-							</div>
-						</div>
-						<br>
-						<div class="row">
-							<div class="col" style="width:50%">
-								<label for="Id" class="form-label">ID</label>
-								<input name="Id" class="form-control" type="number" step="1">
-							  </div>
-							<div class="col" style="width:50%">
-							  <label for="Area" class="form-label">Area</label>
-							  <input name="Area" class="form-control" type="number" step="1">
 							</div>
 						</div>
 						<br>
