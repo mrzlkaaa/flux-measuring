@@ -22,6 +22,9 @@ var albums = []album{
 }
 
 func main() {
+	http.HandleFunc("/bar", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "Hello, %q", r.URL.Path)
+	})
 	fmt.Println("Hello!")
 	router := gin.Default()
 	router.LoadHTMLFiles("templates/home.html")
