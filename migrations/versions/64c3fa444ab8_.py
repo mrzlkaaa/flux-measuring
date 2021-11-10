@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 1c9f2b8f745d
+Revision ID: 64c3fa444ab8
 Revises: 
-Create Date: 2021-11-09 17:55:08.252200
+Create Date: 2021-11-10 17:52:40.579187
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '1c9f2b8f745d'
+revision = '64c3fa444ab8'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,6 +22,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=100), nullable=True),
     sa.Column('date', sa.Date(), nullable=True),
+    sa.Column('irradiation_finished', sa.DateTime(), nullable=True),
     sa.Column('irradiation_time', sa.Float(), nullable=True),
     sa.Column('power', sa.Float(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
@@ -29,11 +30,14 @@ def upgrade():
     )
     op.create_table('sample',
     sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('cooling_finished', sa.DateTime(), nullable=True),
+    sa.Column('area', sa.Float(), nullable=True),
     sa.Column('cooling_time', sa.Float(), nullable=True),
     sa.Column('measuring_time', sa.Float(), nullable=True),
+    sa.Column('mass', sa.Float(), nullable=True),
     sa.Column('activity', sa.Float(), nullable=True),
-    sa.Column('exper_name', sa.String(length=100), nullable=True),
-    sa.ForeignKeyConstraint(['exper_name'], ['experiment.name'], ),
+    sa.Column('exp_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['exp_id'], ['experiment.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
