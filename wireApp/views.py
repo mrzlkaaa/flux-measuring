@@ -1,4 +1,5 @@
 from flask import render_template, redirect, url_for, Blueprint, request
+from datetime import timedelta
 from .model import *
 from .handler import *
 
@@ -26,8 +27,6 @@ def detail(name):
     exper_instance = Experiment.query.filter(Experiment.name==name).first()
     irr_fn = exper_instance.irradiation_finished
     irr_time = exper_instance.irradiation_time
-    for i in exper_instance.samples:
-        print(i.activity, i.area)
     if request.method == "POST":
         id = request.form["Id"]
         A, mass, cool_time, meas_time = activity(net_counts=request.form["Area"], irr_time=irr_time, irr_fn=irr_fn, meas_time=request.form["Meas-time"],
@@ -35,11 +34,21 @@ def detail(name):
         print(A)
         add_sub_instance = Sample(id=id, cooling_finished=request.form["Cool-finished"], area=request.form["Area"], 
                                 activity=A, cooling_time=cool_time, measuring_time=meas_time, mass=mass, expermt=exper_instance)
-        print(add_sub_instance)
         db.session.add(add_sub_instance)
         db.session.commit()
         return redirect(url_for("view.detail", name=name))
     return render_template("experiment.html", data=exper_instance)
+
+@view.route("/edit/<name>", methods=["GET", "POST"])
+def edit_experiment(name):
+    exper_instance = Experiment.query.filter(Experiment.name==name).first()
+    started_time = exper_instance.irradiation_finished - timedelta(seconds=exper_instance.irradiation_time)
+    if request.method == "POST":
+        exper_instance.name, exper_instance.irradiation_finished = request.form["Experiment"], request.form["Irr-finished"]
+        exper_instance.irradiation_time = (conver_datetime(request.form["Irr-finished"]) - conver_datetime( request.form["Irr-started"])).total_seconds()
+        db.session.commit()
+        return redirect(url_for("view.detail", name=name))
+    return render_template("edit-experiment.html", data=exper_instance, irradiation_started=started_time)
 
 @view.route("/edit/<name>/<sample_id>/", methods=["GET", "POST"])
 def edit_sample(name, sample_id):

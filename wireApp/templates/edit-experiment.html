@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+	{% block title %}
+	<title> Home Page </title>
+	{% endblock %}
+	{% block content %}
+		<form method="POST", enctype="multipart/form-data"> 
+			<div class='main-box'>
+				<div class="card text-center">
+				  <div class="card-header">
+				    Experiment setting up
+				  </div>
+				  <div class="card-body">
+				    <h5 class="card-title">Fill the forms below</h5> <br>
+					<!--* add container here -->
+					<div class="container">
+						<div class="row">
+							<div class="col" style="width:50%">
+								<label for="Experiment" class="form-label">Experiment name</label>
+								<input name="Experiment" class="form-control" type="text" value="{{data.name}}">
+							  </div>
+						</div>
+						<br>
+						<div class="row">
+						  <div class="col" style="width:50%">
+							<label for="Irr-started" class="form-label">Irradiation started</label>
+							<input name="Irr-started" class="form-control" type="datetime-local" value="{{irradiation_started.strftime('%Y-%m-%dT%H:%M')}}">
+						  </div>
+						  <div class="col" style="width:50%">
+							<label for="Irr-finished" class="form-label">Irradiation finished</label>
+							<input name="Irr-finished" class="form-control" type="datetime-local" value="{{data.irradiation_finished.strftime('%Y-%m-%dT%H:%M')}}">
+						  </div>
+						</div>
+						<br>
+					</div>
+					<br>
+				    <input type="submit" class="btn btn-primary">
+				  </div>
+				</div>
+			</div>
+		</form>
+	{% endblock %}

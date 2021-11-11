@@ -27,6 +27,11 @@
 								<label class="form-label">{{data.irradiation_time}}</label>
 							</div>
 						</div>
+						<div class="row">
+							<div class="col" style="width:50%">
+								<a href="{{url_for('view.edit_experiment', name=data.name)}}" class="btn btn-primary">Edit</a>
+							</div>
+						</div>
 					</div>
 					<br>
 				    <h5 class="card-title">Fill the forms below to add new sample</h5> <br>
@@ -98,7 +103,7 @@
 						  <tr>
 							<th scope="row">{{i.id}}</th>
 							<td>{{i.mass}}</td>
-							<td>{{'%0.2f' % i.activity}}</td>
+							<td>{{'%0.2e' % i.activity}}</td>
 							<td><a href="{{url_for('view.edit_sample', name=data.name, sample_id=i.id)}}">Edit</a></td>
 						  </tr>
 						</tbody>
