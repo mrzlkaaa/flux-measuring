@@ -9,6 +9,8 @@ sqlalchemy = "*"
 pg8000 = "*"
 flask-migrate = "*"
 python-dotenv = "*"
+celery = "*"
+pika = "*"
 
 [dev-packages]
 

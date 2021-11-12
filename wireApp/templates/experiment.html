@@ -110,8 +110,9 @@
 						{% endfor %}
 					  </table>
 				</div>
-				<!--TODO <div class='col center-text'>Responsive plot will be here!</div> -->
-			</div>
+				<div class='col center-text'>Responsive plot will be here!
+					<canvas id="myChart" width="400" height="400"></canvas>
+				</div>
 		</div>
 		
 		<form action='{{url_for("view.delete_experiment", name=data.name)}}' method="POST", enctype="multipart/form-data">
@@ -134,4 +135,8 @@
 				</div>
 			</div>
 		</form>
+		</div>
+		<script src="{{url_for('static', filename='chart.js')}}"></script>
+			
+		</script>
 	{% endblock %}
