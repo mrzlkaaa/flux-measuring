@@ -1,14 +1,15 @@
 $(document).ready(function(){
     $.ajax({
-        url:"https://www.google.ru/",
+        url:"/api/chart",
         type:"GET",
         // data: {'button':button, "first":FirstName, "last":LastName, "email":Email, "mobile":Mobile},
         success: function(results) {
-            console.log(results);
+            obj = JSON.parse(results)
+            console.log(typeof(obj));
+            console.log(obj);
             // $('#response').html(results);
         }
     });
-
 })
 
 const ctx = document.getElementById('myChart').getContext('2d');

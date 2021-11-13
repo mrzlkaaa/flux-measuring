@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "4ff82126f0a1bb7e8720a9b8d7285a0d596bc90d26a264cebe1ad82a0906da12"
+            "sha256": "535804d9ede1c6511b6121d7a0e3342a07784b88bcd5f186a58dfbfbbaf49af8"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -29,6 +29,13 @@
                 "sha256:493a2ac6788ce270a2f6a765b017299f60c1998f5a8617908ee9be082f7300fb"
             ],
             "version": "==5.0.6"
+        },
+        "aniso8601": {
+            "hashes": [
+                "sha256:1d2b7ef82963909e93c4f24ce48d4de9e66009a21bf1c1e1c85bdd0812fe412f",
+                "sha256:72e3117667eedf66951bb2d93f4296a56b94b078a8a95905a052611fb3f1b973"
+            ],
+            "version": "==9.0.1"
         },
         "asn1crypto": {
             "hashes": [
@@ -95,6 +102,14 @@
             ],
             "index": "pypi",
             "version": "==3.1.0"
+        },
+        "flask-restful": {
+            "hashes": [
+                "sha256:4970c49b6488e46c520b325f54833374dc2b98e211f1b272bd4b0c516232afe2",
+                "sha256:ccec650b835d48192138c85329ae03735e6ced58e9b2d9c2146d6c84c06fa53e"
+            ],
+            "index": "pypi",
+            "version": "==0.3.9"
         },
         "flask-sqlalchemy": {
             "hashes": [
@@ -263,11 +278,11 @@
         },
         "pg8000": {
             "hashes": [
-                "sha256:fa95b112ba940e227b6de81bda1a16a653d4fdafa7d92baf5116236210417989",
-                "sha256:fd69ad5af2781e59608cb3f4d966b234d961c62f093edd3194ac45df65b8d1d4"
+                "sha256:a413e00141342813a2ca47e8b7b0549ff338cca02bc819076b6d70f12d755c79",
+                "sha256:e339f09f676629c0806c8dcc6fdc89ca6dba817e20702448c5172e85d133419d"
             ],
             "index": "pypi",
-            "version": "==1.22.1"
+            "version": "==1.23.0"
         },
         "pika": {
             "hashes": [
@@ -298,6 +313,14 @@
                 "sha256:acad2d8b20a1af07d4e4c9d2e9285c5ed9104354062f275f3fcd88dcef4f1326"
             ],
             "version": "==2021.3"
+        },
+        "redis": {
+            "hashes": [
+                "sha256:0e7e0cfca8660dea8b7d5cd8c4f6c5e29e11f31158c0b0ae91a397f00e5a05a2",
+                "sha256:432b788c4530cfe16d8d943a09d40ca6c16149727e4afe8c2c9d5580c59d9f24"
+            ],
+            "index": "pypi",
+            "version": "==3.5.3"
         },
         "scramp": {
             "hashes": [

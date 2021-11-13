@@ -11,6 +11,8 @@ flask-migrate = "*"
 python-dotenv = "*"
 celery = "*"
 pika = "*"
+flask-restful = "*"
+redis = "*"
 
 [dev-packages]
 

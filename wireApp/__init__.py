@@ -1,8 +1,9 @@
 import os
-from flask import Flask
+from flask import Flask, Blueprint
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from dotenv import load_dotenv
+
 
 load_dotenv()
 
@@ -10,6 +11,7 @@ load_dotenv()
 
 db = SQLAlchemy()
 migrate = Migrate()
+
 
 def create_app(test_config=None):
     app = Flask(__name__)
@@ -19,9 +21,13 @@ def create_app(test_config=None):
     )
     db.init_app(app)
     migrate.init_app(app, db)
+    
 
     from .views import view
+    from .api import api
     app.register_blueprint(view, prefix="/")
+    app.register_blueprint(api, prefix="/api")
+    # app.register_blueprint(api_bp, prefix="/")
     # if test_config is None:
     #     # load the instance config, if it exists, when not testing
     #     app.config.from_pyfile('config.py', silent=True)

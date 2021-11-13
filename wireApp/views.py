@@ -1,7 +1,8 @@
-from flask import render_template, redirect, url_for, Blueprint, request
+from flask import render_template, redirect, url_for, Blueprint, request, session
 from datetime import timedelta
 from .model import *
 from .handler import *
+# from .api import *
 
 view = Blueprint('view', __name__)
 
@@ -22,9 +23,12 @@ def experiments_list():
     listed = Experiment.query.all()
     return render_template("list.html", list=listed)
 
+
 @view.route("/experiment/<name>", methods=["GET", "POST"])
 def detail(name):
+     #f"/{name}")  #* pass name of instance to  make urlpath and prepare api.py
     exper_instance = Experiment.query.filter(Experiment.name==name).first()
+    r.set("api_ID", exper_instance.id)
     irr_fn = exper_instance.irradiation_finished
     irr_time = exper_instance.irradiation_time
     if request.method == "POST":

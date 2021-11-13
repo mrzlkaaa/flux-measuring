@@ -18,44 +18,43 @@ type gormtest struct {
 }
 
 type Experiment struct {
-	ID      uint
+	ID      int64
 	Name    string   `gorm:"default:newTestInsert"`
 	Samples []Sample `gorm:"foreignKey:Exp_id"`
 }
 
 type Sample struct {
-	ID       uint
+	ID       int64
 	Activity float64
-	Exp_id   uint
+	Exp_id   int64
 }
 
-func config() *[]Sample {
+func config(id int64) *[]Sample {
 	dsn := "host=irt-t.ru user=postgres password=postgres dbname=Detectors port=1111 sslmode=disable"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("connection failed")
 	}
-	exper := ExperimentConstructor()
+	// exper := ExperimentConstructor(id)
 	sample := SampleConstructor()
 	allSamples := AllSampleConstructor()
-	exper.TableName()
+	fmt.Printf("Type of struct slice is %T\n", allSamples)
 	sample.TableName()
-	// experFirst := db.First(exper)
-	// sampleFirst := db.First(sample)
-	samplesAll := db.Find(allSamples)
+	samplesAll := db.Where(&[]Sample{{Exp_id: id}}).Find(allSamples)
 	fmt.Println(samplesAll.Error)
-	// fmt.Println(exper.Name, experFirst.Error)
-	// fmt.Println(sample.Activity, sampleFirst.RowsAffected)
 	return allSamples
 
 }
+
+// func queryFormatting([]Sample)
 
 func (*Experiment) TableName() string {
 	return "experiment"
 }
 
-func ExperimentConstructor() *Experiment {
-	return &Experiment{}
+func ExperimentConstructor(id int64) *Experiment {
+	return &Experiment{ID: id}
+	// return &Experiment{Name: name}
 }
 
 func (*Sample) TableName() string {

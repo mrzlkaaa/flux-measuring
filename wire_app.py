@@ -1,5 +1,6 @@
 from flask import render_template
-from wireApp import create_app, db
+from wireApp import create_app
+
 
 app = create_app()
 
