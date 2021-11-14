@@ -29,7 +29,7 @@ type Sample struct {
 	Exp_id   int64
 }
 
-func config(id int64) *[]Sample {
+func config(id int64) map[string]interface{} {
 	dsn := "host=irt-t.ru user=postgres password=postgres dbname=Detectors port=1111 sslmode=disable"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -38,15 +38,30 @@ func config(id int64) *[]Sample {
 	// exper := ExperimentConstructor(id)
 	sample := SampleConstructor()
 	allSamples := AllSampleConstructor()
-	fmt.Printf("Type of struct slice is %T\n", allSamples)
+	fmt.Printf("Type of struct slice is %T\n", &allSamples)
 	sample.TableName()
-	samplesAll := db.Where(&[]Sample{{Exp_id: id}}).Find(allSamples)
+	samplesAll := db.Where(&[]Sample{{Exp_id: id}}).Find(&allSamples)
 	fmt.Println(samplesAll.Error)
-	return allSamples
+	filteredQuery := queryFormatting(allSamples)
+	return filteredQuery
 
 }
 
-// func queryFormatting([]Sample)
+func queryFormatting(sp []Sample) map[string]interface{} {
+
+	var sliceID []int64
+	var sliceAct []float64
+	for _, v := range sp {
+		sliceID = append(sliceID, v.ID)
+		sliceAct = append(sliceAct, v.Activity)
+	}
+	mapping := map[string]interface{}{
+		"ID":       sliceID,
+		"Activity": sliceAct,
+	}
+	fmt.Println(mapping)
+	return mapping
+}
 
 func (*Experiment) TableName() string {
 	return "experiment"
@@ -65,6 +80,6 @@ func SampleConstructor() *Sample {
 	return &Sample{}
 }
 
-func AllSampleConstructor() *[]Sample {
-	return &[]Sample{}
+func AllSampleConstructor() []Sample {
+	return []Sample{}
 }

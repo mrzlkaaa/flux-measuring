@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 	{% block title %}
-	<title> Add Samples </title>
+	<title> Experiment </title>
 	{% endblock %}
 	{% block content %}
 		<form method="POST", enctype="multipart/form-data"> 
@@ -89,6 +89,14 @@
 		<div class="samples-box">
 			<div class='row'>
 				<div class='col center-text'>
+					<form action='{{url_for("view.export_experiment", name=data.name)}}' method="POST", enctype="multipart/form-data"> 
+						<input type="submit" class="btn btn-primary" value="Export to .xlsx">
+					</form>
+				</div>
+			</div>
+			<br>
+			<div class='row'>
+				<div class='col center-text'>
 					<table class="table">
 						<thead>
 						  <tr>
@@ -110,11 +118,10 @@
 						{% endfor %}
 					  </table>
 				</div>
-				<div class='col center-text'>Responsive plot will be here!
+				<div class='col center-text'>
 					<canvas id="myChart" width="400" height="400"></canvas>
 				</div>
 		</div>
-		
 		<form action='{{url_for("view.delete_experiment", name=data.name)}}' method="POST", enctype="multipart/form-data">
 			<!-- Modal -->
 			<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">

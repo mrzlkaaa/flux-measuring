@@ -1,7 +1,10 @@
-from flask import render_template, redirect, url_for, Blueprint, request, session
+import xlsxwriter
+import os
+from flask import render_template, redirect, url_for, Blueprint, request, send_from_directory
 from datetime import timedelta
 from .model import *
 from .handler import *
+from collections import defaultdict
 # from .api import *
 
 view = Blueprint('view', __name__)
@@ -70,6 +73,21 @@ def edit_sample(name, sample_id):
         db.session.commit()
         return redirect(url_for("view.detail", name=name))
     return render_template("edit-sample.html", data=sample_instance)
+
+@view.route("/<name>/export", methods=["GET","POST"])
+def export_experiment(name):
+    if request.method == "POST":
+        dct = defaultdict(list)
+        instance = Experiment.query.filter(Experiment.name==name).first()
+        dct['irradiation_finished'].append(instance.irradiation_finished)
+        dct['irradiation time'].append(instance.irradiation_time)
+        for i in instance.samples:
+            dct["area"].append(i.area)
+        with xlsxwriter.Workbook('export.xlsx') as wb:
+            wsh = wb.add_worksheet()
+            wsh.write_column(1,1, dct["area"])
+        return send_from_directory(os.getcwd(), "export.xlsx", as_attachment=True)
+    # return redirect(url_for("view.experiments_list"))
 
 @view.route("/<name>/delete", methods=["GET","POST"])
 def delete_experiment(name):

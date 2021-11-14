@@ -13,6 +13,7 @@ celery = "*"
 pika = "*"
 flask-restful = "*"
 redis = "*"
+xlsxwriter = "*"
 
 [dev-packages]
 
