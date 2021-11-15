@@ -11,12 +11,6 @@ type Tabler interface {
 	TableName() string
 }
 
-type gormtest struct {
-	ID   uint
-	Name string `gorm:"default:newTestInsert"`
-	Age  int64  `gorm:"default:22"`
-}
-
 type Experiment struct {
 	ID      int64
 	Name    string   `gorm:"default:newTestInsert"`

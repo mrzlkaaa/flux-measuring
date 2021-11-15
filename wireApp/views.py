@@ -2,13 +2,14 @@ import xlsxwriter
 import os
 from flask import render_template, redirect, url_for, Blueprint, request, send_from_directory
 from datetime import timedelta
+from . import create_app
 from .model import *
 from .handler import *
 from collections import defaultdict
-# from .api import *
 
 view = Blueprint('view', __name__)
 
+app = create_app()
 
 @view.route('/create', methods=["GET", "POST"])
 def create():
@@ -66,7 +67,7 @@ def edit_sample(name, sample_id):
         irr_fn = exper_instance.irradiation_finished
         irr_time = exper_instance.irradiation_time
         A, mass, cool_time, meas_time = activity(net_counts=request.form["Area"], irr_time=irr_time, irr_fn=irr_fn, meas_time=request.form["Meas-time"],
-                                        cool_fn=request.form["Cool-finished"], mass=request.form["Mass"])
+                                                 cool_fn=request.form["Cool-finished"], mass=request.form["Mass"])
         sample_instance.cooling_finished, sample_instance.area, sample_instance.cooling_time = request.form["Cool-finished"], request.form["Area"], cool_time
         sample_instance.measuring_time, sample_instance.mass, sample_instance.activity = meas_time, mass, A
         db.session.flush()
@@ -80,14 +81,34 @@ def export_experiment(name):
         dct = defaultdict(list)
         instance = Experiment.query.filter(Experiment.name==name).first()
         dct['irradiation_finished'].append(instance.irradiation_finished)
-        dct['irradiation time'].append(instance.irradiation_time)
-        for i in instance.samples:
+        dct['irradiation_time'].append(instance.irradiation_time)
+        for n, i in enumerate(instance.samples):
+            dct["id"].append(i.id)
+            dct["cooling_finished"].append(i.cooling_finished)
+            dct["cooling_time"].append(i.cooling_time)
+            dct["measuring_time"].append(i.measuring_time)
+            dct["mass"].append(i.mass)
             dct["area"].append(i.area)
-        with xlsxwriter.Workbook('export.xlsx') as wb:
+            dct["activity"].append(i.activity)
+        try:
+            os.mkdir(os.path.join(os.getcwd(), "Downloads"))
+        except FileExistsError as e:
+            print(e)
+        with xlsxwriter.Workbook(os.path.join(app.config["DOWNLOAD_FOLDER"], "export.xlsx")) as wb:
             wsh = wb.add_worksheet()
-            wsh.write_column(1,1, dct["area"])
-        return send_from_directory(os.getcwd(), "export.xlsx", as_attachment=True)
-    # return redirect(url_for("view.experiments_list"))
+            header = ["IrrFinished", "IrrTime", "ID", "CoolFinished", "CoolTime", "MeasTime", "Mass", "NetCounts", "Activity"]
+            header_format = wb.add_format({ 'bold': True,
+                                            'bottom': 2,
+                                            'bg_color': '#F9DA04'})
+            datetime_format = wb.add_format({'num_format': 'dd/mm/yy hh:mm'})
+            for n, i in enumerate(header, start=1):
+                wsh.write(1, n, i, header_format)
+            for num, i in enumerate(dct.values(), start=1):
+                if not isinstance(i[0], datetime):
+                    wsh.write_column(2, num, i)
+                else:
+                    wsh.write_column(2, num, i, datetime_format)
+        return send_from_directory(app.config["DOWNLOAD_FOLDER"], "export.xlsx", as_attachment=True)
 
 @view.route("/<name>/delete", methods=["GET","POST"])
 def delete_experiment(name):
