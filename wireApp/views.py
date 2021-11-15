@@ -37,13 +37,14 @@ def detail(name):
     irr_time = exper_instance.irradiation_time
     if request.method == "POST":
         id = request.form["Id"]
+        print(type(id))
         A, mass, cool_time, meas_time = activity(net_counts=request.form["Area"], irr_time=irr_time, irr_fn=irr_fn, meas_time=request.form["Meas-time"],
                                             cool_fn=request.form["Cool-finished"], mass=request.form["Mass"])
         print(A)
         add_sub_instance = Sample(id=id, cooling_finished=request.form["Cool-finished"], area=request.form["Area"], 
                                 activity=A, cooling_time=cool_time, measuring_time=meas_time, mass=mass, expermt=exper_instance)
-        db.session.add(add_sub_instance)
-        db.session.commit()
+        # db.session.add(add_sub_instance)
+        # db.session.commit()
         return redirect(url_for("view.detail", name=name))
     return render_template("experiment.html", data=exper_instance)
 
