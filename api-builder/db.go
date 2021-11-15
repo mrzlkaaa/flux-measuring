@@ -18,7 +18,7 @@ type Experiment struct {
 }
 
 type Sample struct {
-	ID       int64
+	Name     int64
 	Activity float64
 	Exp_id   int64
 }
@@ -43,14 +43,14 @@ func config(id int64) map[string]interface{} {
 
 func queryFormatting(sp []Sample) map[string]interface{} {
 
-	var sliceID []int64
+	var sliceName []int64
 	var sliceAct []float64
 	for _, v := range sp {
-		sliceID = append(sliceID, v.ID)
+		sliceName = append(sliceName, v.Name)
 		sliceAct = append(sliceAct, v.Activity)
 	}
 	mapping := map[string]interface{}{
-		"ID":       sliceID,
+		"Name":     sliceName,
 		"Activity": sliceAct,
 	}
 	fmt.Println(mapping)

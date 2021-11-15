@@ -109,10 +109,10 @@
 						<tbody>
 						{% for i in data.samples | sort(attribute="id") %}
 						  <tr>
-							<th scope="row">{{i.id}}</th>
+							<th scope="row">{{i.name}}</th>
 							<td>{{i.mass}}</td>
 							<td>{{'%0.2e' % i.activity}}</td>
-							<td><a href="{{url_for('view.edit_sample', name=data.name, sample_id=i.id)}}">Edit</a></td>
+							<td><a href="{{url_for('view.edit_sample', name=data.name, sample_id=i.name)}}">Edit</a></td>
 						  </tr>
 						</tbody>
 						{% endfor %}

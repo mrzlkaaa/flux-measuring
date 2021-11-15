@@ -19,7 +19,8 @@ class Experiment(db.Model):
     
 class Sample(db.Model):
     __tablename__ = 'sample'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.Integer, default=0)
     cooling_finished = db.Column(db.DateTime())
     area = db.Column(db.Float)
     cooling_time = db.Column(db.Float)

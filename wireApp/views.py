@@ -36,15 +36,15 @@ def detail(name):
     irr_fn = exper_instance.irradiation_finished
     irr_time = exper_instance.irradiation_time
     if request.method == "POST":
-        id = request.form["Id"]
-        print(type(id))
+        sample_name = request.form["Id"]
         A, mass, cool_time, meas_time = activity(net_counts=request.form["Area"], irr_time=irr_time, irr_fn=irr_fn, meas_time=request.form["Meas-time"],
                                             cool_fn=request.form["Cool-finished"], mass=request.form["Mass"])
         print(A)
-        add_sub_instance = Sample(id=id, cooling_finished=request.form["Cool-finished"], area=request.form["Area"], 
+        add_sub_instance = Sample(name=sample_name, cooling_finished=request.form["Cool-finished"], area=request.form["Area"], 
                                 activity=A, cooling_time=cool_time, measuring_time=meas_time, mass=mass, expermt=exper_instance)
-        # db.session.add(add_sub_instance)
-        # db.session.commit()
+        db.session.add(add_sub_instance)
+        print(add_sub_instance)
+        db.session.commit()
         return redirect(url_for("view.detail", name=name))
     return render_template("experiment.html", data=exper_instance)
 
@@ -61,7 +61,7 @@ def edit_experiment(name):
 
 @view.route("/edit/<name>/<sample_id>/", methods=["GET", "POST"])
 def edit_sample(name, sample_id):
-    sample_instance = Sample.query.join(Experiment).filter(Experiment.name==name, Sample.id==int(sample_id)).first()
+    sample_instance = Sample.query.join(Experiment).filter(Experiment.name==name, Sample.name==int(sample_id)).first()
     print(sample_instance.cooling_finished)
     if request.method == "POST":
         exper_instance = Experiment.query.filter(Experiment.name==name).first()
@@ -71,6 +71,7 @@ def edit_sample(name, sample_id):
                                                  cool_fn=request.form["Cool-finished"], mass=request.form["Mass"])
         sample_instance.cooling_finished, sample_instance.area, sample_instance.cooling_time = request.form["Cool-finished"], request.form["Area"], cool_time
         sample_instance.measuring_time, sample_instance.mass, sample_instance.activity = meas_time, mass, A
+        sample_instance.name = request.form["Id"]
         db.session.flush()
         db.session.commit()
         return redirect(url_for("view.detail", name=name))
