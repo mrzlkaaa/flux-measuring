@@ -4,13 +4,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 	"strconv"
 
 	"github.com/streadway/amqp"
 )
 
 func response() {
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	// conn, err := amqp.Dial("amqp://guest:guest@rabbit:5672/")
+	amqpServer := os.Getenv("AMQP_SERVER_URL")
+	conn, err := amqp.Dial(amqpServer)
 	defer conn.Close()
 	failHanler(err, "Failed to connect to RabbitMQ")
 	ch, err := conn.Channel()

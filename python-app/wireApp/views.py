@@ -15,8 +15,9 @@ app = create_app()
 def create():
     if request.method == "POST":
         name = request.form["Experiment"]
-        irr_time  = (conver_datetime(request.form["Irr-finished"]) - conver_datetime( request.form["Irr-started"])).total_seconds()
-        instance = Experiment(name=name, irradiation_finished=request.form["Irr-finished"], irradiation_time=irr_time, power=1)
+        irr_time  = (conver_datetime(request.form["Irr-finished"]) - conver_datetime(request.form["Irr-started"])).total_seconds()
+        date = conver_datetime(request.form["Irr-finished"]).date()
+        instance = Experiment(name=name, date=date, irradiation_finished=request.form["Irr-finished"], irradiation_time=irr_time, power=1)
         db.session.add(instance)
         db.session.commit()
         return redirect(url_for("view.experiments_list"))
@@ -30,8 +31,8 @@ def experiments_list():
 
 @view.route("/experiment/<name>", methods=["GET", "POST"])
 def detail(name):
-     #f"/{name}")  #* pass name of instance to  make urlpath and prepare api.py
     exper_instance = Experiment.query.filter(Experiment.name==name).first()
+    print(exper_instance)
     r.set("api_ID", exper_instance.id)
     irr_fn = exper_instance.irradiation_finished
     irr_time = exper_instance.irradiation_time
@@ -51,10 +52,12 @@ def detail(name):
 @view.route("/edit/<name>", methods=["GET", "POST"])
 def edit_experiment(name):
     exper_instance = Experiment.query.filter(Experiment.name==name).first()
+    
     started_time = exper_instance.irradiation_finished - timedelta(seconds=exper_instance.irradiation_time)
     if request.method == "POST":
         exper_instance.name, exper_instance.irradiation_finished = request.form["Experiment"], request.form["Irr-finished"]
         exper_instance.irradiation_time = (conver_datetime(request.form["Irr-finished"]) - conver_datetime( request.form["Irr-started"])).total_seconds()
+        exper_instance.date = conver_datetime(request.form["Irr-finished"]).date()
         db.session.commit()
         return redirect(url_for("view.detail", name=name))
     return render_template("edit-experiment.html", data=exper_instance, irradiation_started=started_time)

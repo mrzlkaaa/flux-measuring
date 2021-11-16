@@ -5,12 +5,12 @@ $(document).ready(function(){
         // data: {'button':button, "first":FirstName, "last":LastName, "email":Email, "mobile":Mobile},
         success: function(results) {
             obj = JSON.parse(results)
-            console.log(obj.ID);
+            console.log(obj);
             const ctx = document.getElementById('myChart').getContext('2d');
             const myChart = new Chart(ctx, {
                 type: 'scatter',
                 data: {
-                    labels: obj.ID,
+                    labels: obj.Name,
                     datasets: [{
                         label: 'Data',
                         data: obj.Activity,
