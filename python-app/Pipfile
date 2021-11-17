@@ -4,16 +4,18 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask = "*"
-sqlalchemy = "*"
+Flask = "*"
+SQLAlchemy = "*"
 pg8000 = "*"
-flask-migrate = "*"
+Flask-Migrate = "*"
 python-dotenv = "*"
 celery = "*"
 pika = "*"
-flask-restful = "*"
+Flask-RESTful = "*"
 redis = "*"
-xlsxwriter = "*"
+XlsxWriter = "*"
+Flask-Cors = "*"
+flask-cors = "*"
 
 [dev-packages]
 

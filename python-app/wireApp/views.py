@@ -29,11 +29,9 @@ def experiments_list():
     return render_template("list.html", list=listed)
 
 
-@view.route("/experiment/<name>", methods=["GET", "POST"])
-def detail(name):
-    exper_instance = Experiment.query.filter(Experiment.name==name).first()
-    print(exper_instance)
-    r.set("api_ID", exper_instance.id)
+@view.route("/experiment/<id>", methods=["GET", "POST"])
+def detail(id):
+    exper_instance = Experiment.query.filter(Experiment.id==int(id)).first()
     irr_fn = exper_instance.irradiation_finished
     irr_time = exper_instance.irradiation_time
     if request.method == "POST":
@@ -46,7 +44,7 @@ def detail(name):
         db.session.add(add_sub_instance)
         print(add_sub_instance)
         db.session.commit()
-        return redirect(url_for("view.detail", name=name))
+        return redirect(url_for("view.detail", id=id))
     return render_template("experiment.html", data=exper_instance)
 
 @view.route("/edit/<name>", methods=["GET", "POST"])

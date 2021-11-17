@@ -5,13 +5,13 @@ from flask_migrate import Migrate
 from dotenv import load_dotenv
 
 
+
 load_dotenv()
 
 #TODO add config file .py 
 
 db = SQLAlchemy()
 migrate = Migrate()
-
 
 def create_app(test_config=None):
     app = Flask(__name__)
