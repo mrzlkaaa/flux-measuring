@@ -22,7 +22,7 @@ services:
       - db
   
   db:
-    container_name: db
+    container_name: db-flux-meas
     image: postgres:12
     ports:
       - 5432:5433

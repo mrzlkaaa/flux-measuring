@@ -1,11 +1,10 @@
 $(document).ready(function(){
     var path = new URL(`${document.URL}`)
+    console.log(path)
     id = path.pathname.split("/").slice(-1)
     $.ajax({
-        // url:"/api/chart",
-        url:`http://192.168.45.221:8080/api/experiment/${id}`,
+        url:`http://localhost:8080/api/experiment/${id}`,
         type:"GET",
-        // data: {'button':button, "first":FirstName, "last":LastName, "email":Email, "mobile":Mobile},
         success: function(results) {
             console.log(results)
             const ctx = document.getElementById('myChart').getContext('2d');

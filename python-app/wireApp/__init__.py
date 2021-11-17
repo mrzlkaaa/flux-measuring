@@ -26,9 +26,9 @@ def create_app(test_config=None):
     
 
     from .views import view
-    from .api import api
+    # from .api import api5
     app.register_blueprint(view, prefix="/")
-    app.register_blueprint(api, prefix="/api")
+    # app.register_blueprint(api, prefix="/api")
     # app.register_blueprint(api_bp, prefix="/")
     # if test_config is None:
     #     # load the instance config, if it exists, when not testing
