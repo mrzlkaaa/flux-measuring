@@ -16,6 +16,7 @@ redis = "*"
 XlsxWriter = "*"
 Flask-Cors = "*"
 flask-cors = "*"
+gunicorn = "*"
 
 [dev-packages]
 

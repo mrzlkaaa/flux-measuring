@@ -6,19 +6,15 @@ services:
     ports:
       - 5000:5000
     depends_on:
-      # - rabbit
       - db
   
   golang:
     container_name: go
     build: ./api-builder
     restart: always
-    # environment:
-      # AMQP_SERVER_URL: amqp://guest:guest@rabbit:5672/
     ports:
      - 8080:8080
     depends_on:
-      # - rabbit
       - db
   
   db:
@@ -31,13 +27,8 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=Detectors
 
-  # rabbit:
-  #   container_name: rabbitmq
-  #   image: rabbitmq:3.9-management
-  #   environment:
-  #     - RABBITMQ_DEFAULT_USER=guest
-  #     - RABBITMQ_DEFAULT_PASS=guest
-
-    # ports:
-    #   - 5672:5672
-    #   - 15672:15672
+  proxy:
+    build: ./nginx
+    restart: always
+    ports:
+      - 80:80
