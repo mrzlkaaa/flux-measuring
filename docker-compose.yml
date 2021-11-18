@@ -3,10 +3,10 @@ services:
   flask:
     container_name: python
     build: ./python-app
+    environment:
+      - FLASK_APP=wire_app.py
     ports:
       - 5000:5000
-    depends_on:
-      - db
   
   golang:
     container_name: go
@@ -14,21 +14,9 @@ services:
     restart: always
     ports:
      - 8080:8080
-    depends_on:
-      - db
-  
-  db:
-    container_name: db-flux-meas
-    image: postgres:12
-    ports:
-      - 5432:5433
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=Detectors
 
-  proxy:
-    build: ./nginx
-    restart: always
-    ports:
-      - 80:80
+  # proxy:
+  #   build: ./nginx
+  #   restart: always
+  #   ports:
+  #     - 80:80
