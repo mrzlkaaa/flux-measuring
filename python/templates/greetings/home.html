@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 	{% block title %}
-	<title> List Page </title>
+	<title> Home </title>
 	{% endblock %}
 
 {% block content %}
@@ -8,53 +8,67 @@
 <div class="row align-items-center">
 	<div class="row">
 			<div class="col">
-				<div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
-					<div class="carousel-indicators">
-						<button type="button" data-bs-target="#carouselExampleInterval" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-						<button type="button" data-bs-target="#carouselExampleInterval" data-bs-slide-to="1" aria-label="Slide 2"></button>	
+				<div class="card text-center">
+					<div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
+						<div class="carousel-indicators">
+							<button type="button" data-bs-target="#carouselExampleInterval" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+							<button type="button" data-bs-target="#carouselExampleInterval" data-bs-slide-to="1" aria-label="Slide 2"></button>	
+						</div>
+						<div class="carousel-inner">
+						  <div class="carousel-item active" data-bs-interval="3000">
+							<a href="http://localhost:5000/list"> <img src="{{url_for('static', filename=wires[0])}}" class="d-block w-100" alt="..."> </a>
+						  </div>
+						  <div class="carousel-item" data-bs-interval="3000">
+							<a href="http://localhost:5000/list"> <img src="{{url_for('static', filename=wires[1])}}" class="d-block w-100" alt="..."> </a>
+						  </div>
+						</div>
+						<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+						  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+						  <span class="visually-hidden">Previous</span>
+						</button>
+						<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+						  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+						  <span class="visually-hidden">Next</span>
+						</button>
 					</div>
-					<div class="carousel-inner">
-					  <div class="carousel-item active" data-bs-interval="3000">
-						<a href="http://localhost:5000/list"> <img src="{{url_for('static', filename=wires[0])}}" class="d-block w-100" alt="..."> </a>
-					  </div>
-					  <div class="carousel-item" data-bs-interval="3000">
-						<a href="http://localhost:5000/list"> </a><img src="{{url_for('static', filename=wires[1])}}" class="d-block w-100" alt="..."> </a>
-					  </div>
+					<div class="card-body">
+						<h5 class="card-title">Neutron distribution</h5>
+						<p class="card-text">Proding service to handle experimental data of your wire probs (or bunch of foils) with beautiful chart</p>
+						<a href="#" class="btn btn-primary">Get it!</a>
 					</div>
-					<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
-					  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-					  <span class="visually-hidden">Previous</span>
-					</button>
-					<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
-					  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-					  <span class="visually-hidden">Next</span>
-					</button>
-				  </div>
+				</div>
 				<br>
 			</div>
 			<div class="col">
-				<div id="carouselExampleInterval2" class="carousel slide" data-bs-ride="carousel">
-					<div class="carousel-indicators">
-						<button type="button" data-bs-target="#carouselExampleInterval2" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-						<button type="button" data-bs-target="#carouselExampleInterval2" data-bs-slide-to="1" aria-label="Slide 2"></button>	
+				<div class="card text-center">
+					<div id="carouselExampleInterval2" class="carousel slide" data-bs-ride="carousel">
+						<div class="carousel-indicators">
+							<button type="button" data-bs-target="#carouselExampleInterval2" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+							<button type="button" data-bs-target="#carouselExampleInterval2" data-bs-slide-to="1" aria-label="Slide 2"></button>	
+						</div>
+						<div class="carousel-inner">
+						<div class="carousel-item active" data-bs-interval="3000">
+							<a href="#"> </a><img src="{{url_for('static', filename=foils[1])}}" class="d-block w-100" alt="..."> </a>
+						</div>
+						<div class="carousel-item" data-bs-interval="3000">
+							<a href="#"> </a><img src="{{url_for('static', filename=foils[1])}}" class="d-block w-100" alt="..."> </a>
+						</div>
+						</div>
+						<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval2" data-bs-slide="prev">
+						<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+						<span class="visually-hidden">Previous</span>
+						</button>
+						<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval2" data-bs-slide="next">
+						<span class="carousel-control-next-icon" aria-hidden="true"></span>
+						<span class="visually-hidden">Next</span>
+						</button>
 					</div>
-					<div class="carousel-inner">
-					  <div class="carousel-item active" data-bs-interval="3000">
-						<a href="#"> </a><img src="{{url_for('static', filename=foils[1])}}" class="d-block w-100" alt="..."> </a>
-					  </div>
-					  <div class="carousel-item" data-bs-interval="3000">
-						<a href="#"> </a><img src="{{url_for('static', filename=foils[1])}}" class="d-block w-100" alt="..."> </a>
-					  </div>
+					<div class="card-body">
+						<h5 class="card-title">Activation foils</h5>
+						<p class="card-text">Easy handling of experimental data based on cadmium ratio (also providing feature to ignor foil with cadmium)</p>
+						<a href="#" class="btn btn-primary">Get it!</a>
 					</div>
-					<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval2" data-bs-slide="prev">
-					  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-					  <span class="visually-hidden">Previous</span>
-					</button>
-					<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval2" data-bs-slide="next">
-					  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-					  <span class="visually-hidden">Next</span>
-					</button>
-				  </div>
+				</div>
 				<br>
 			</div>
 	</div>
