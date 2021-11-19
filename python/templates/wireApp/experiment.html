@@ -91,7 +91,7 @@
 				<div class='col center-text'>
 					<form action='{{url_for("view.export_experiment", name=data.name)}}' method="POST", enctype="multipart/form-data"> 
 						<input type="submit" class="btn btn-primary" value="Export to .xlsx"> <br> <br>
-						<a href="http://localhost:8080" class="btn btn-primary">Go to API</a>
+						<a href="http://localhost:8080/api/experiment/{{data.id}}" class="btn btn-primary">Go to API</a>
 					</form>
 				</div>
 			</div>

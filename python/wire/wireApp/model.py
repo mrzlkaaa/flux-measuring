@@ -1,4 +1,4 @@
-import redis
+# import redis
 from . import db
 from sqlalchemy import func
 

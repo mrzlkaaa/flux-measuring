@@ -1,0 +1,16 @@
+.main-box {
+    margin: 0 auto;
+    width: 50%;
+}
+.samples-box {
+    width: 50%;
+    margin: auto;
+}
+
+.container {
+    width: 70%;   
+}
+
+.center-text {
+    text-align: center;
+}

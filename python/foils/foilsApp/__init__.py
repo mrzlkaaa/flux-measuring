@@ -1,0 +1,27 @@
+import os
+from flask import Flask, Blueprint
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+from dotenv import load_dotenv
+
+load_dotenv()
+
+db = SQLAlchemy()
+migrate = Migrate()
+
+def create_app():
+    app = Flask(__name__)
+    app.config.from_mapping(
+        SECRET_KEY = 'DEV',
+        SQLALCHEMY_DATABASE_URI = f"postgresql+pg8000://{os.environ['PSQL_USER']}:{os.environ['PSWD']}@{os.environ['HOST']}:{os.environ['PORT']}/{os.environ['DB']}",
+    )
+
+    db.init_app(app)
+    migrate.init_app(app, db)
+
+    from .views import view
+    app.register_blueprint(view, prefix="/")
+
+    return app
+
+

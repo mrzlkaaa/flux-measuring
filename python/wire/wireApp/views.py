@@ -21,16 +21,18 @@ def create():
         db.session.add(instance)
         db.session.commit()
         return redirect(url_for("view.experiments_list"))
-    return render_template("add-experiment.html")
+    return render_template("wireApp/add-experiment.html")
 
 @view.route("/list", methods=["GET"])
 def experiments_list():
     listed = Experiment.query.all()
-    return render_template("list.html", list=listed)
+    return render_template("wireApp/list.html", list=listed)
 
 
 @view.route("/experiment/<id>", methods=["GET", "POST"])
 def detail(id):
+    print(os.path.split(os.getcwd()))
+    print(app.__dict__)
     exper_instance = Experiment.query.filter(Experiment.id==int(id)).first()
     irr_fn = exper_instance.irradiation_finished
     irr_time = exper_instance.irradiation_time
@@ -45,7 +47,7 @@ def detail(id):
         print(add_sub_instance)
         db.session.commit()
         return redirect(url_for("view.detail", id=id))
-    return render_template("experiment.html", data=exper_instance)
+    return render_template("wireApp/experiment.html", data=exper_instance)
 
 @view.route("/edit/<name>", methods=["GET", "POST"])
 def edit_experiment(name):
@@ -58,7 +60,7 @@ def edit_experiment(name):
         exper_instance.date = conver_datetime(request.form["Irr-finished"]).date()
         db.session.commit()
         return redirect(url_for("view.detail", name=name))
-    return render_template("edit-experiment.html", data=exper_instance, irradiation_started=started_time)
+    return render_template("wireApp/edit-experiment.html", data=exper_instance, irradiation_started=started_time)
 
 @view.route("/edit/<name>/<sample_id>/", methods=["GET", "POST"])
 def edit_sample(name, sample_id):
@@ -76,7 +78,7 @@ def edit_sample(name, sample_id):
         db.session.flush()
         db.session.commit()
         return redirect(url_for("view.detail", name=name))
-    return render_template("edit-sample.html", data=sample_instance)
+    return render_template("wireApp/edit-sample.html", data=sample_instance)
 
 @view.route("/<name>/export", methods=["GET","POST"])
 def export_experiment(name):

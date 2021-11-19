@@ -9,14 +9,12 @@ SQLAlchemy = "*"
 pg8000 = "*"
 Flask-Migrate = "*"
 python-dotenv = "*"
-celery = "*"
 pika = "*"
 Flask-RESTful = "*"
-redis = "*"
 XlsxWriter = "*"
 Flask-Cors = "*"
-flask-cors = "*"
 gunicorn = "*"
+requests = "*"
 
 [dev-packages]
 
