@@ -44,6 +44,7 @@ wcwidth = "==0.2.5"
 Werkzeug = "==2.0.2"
 wrapt = "==1.13.3"
 XlsxWriter = "==3.0.2"
+flask-wtf = "*"
 
 [dev-packages]
 
