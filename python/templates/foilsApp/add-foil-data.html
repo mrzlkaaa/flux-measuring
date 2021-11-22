@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+	{% block title %}
+	<title> Experiment </title>
+	{% endblock %}
+	{% block content %}
+		<form method="POST", enctype="multipart/form-data"> 
+			<div class='main-box'>
+				<div class="card text-center">
+				  <div class="card-body">
+					<div class="container">
+						<div class="row">
+							<div class="col" style="width:50%">
+								<label for="nuclide" class="form-label">Nuclide</label>
+								{{form.nuclide(class="form-control")}}
+							</div>
+							<div class="col" style="width:50%">
+								<label for="endf_data" class="form-label">ENDF link</label>
+								{{form.endf_data(class="form-control")}}
+							</div>
+						</div>
+						<br>
+						<div class="row">
+							<div class="col" style="width:50%">
+								<label for="cross_section" class="form-label">Cross section</label>
+								<div class="input-group mb-3">
+									{{form.cross_section(class="form-control", **{"aria-describedby":"basic-addon2"})}}
+									<span class="input-group-text" id="basic-addon2">barn</span>
+								</div>
+							</div>
+							  <div class="col" style="width:50%">
+								<label for="abundance" class="form-label">Abundance</label>
+								<div class="input-group mb-3">
+									{{form.abundance(class="form-control", **{"aria-describedby":"basic-addon2"})}}
+									<span class="input-group-text" id="basic-addon2">%</span>
+								</div>
+							</div>
+						</div>
+						<br>
+						<div class="row">
+							<div class="col" style="width:50%">
+								<label for="half_life" class="form-label">Half-life</label>
+								<div class="input-group mb-3">
+									{{form.half_life(class="form-control",  **{"aria-describedby":"inputGroupSelect01"})}}
+										<select class="form-select " name="half_life_type" id="inputGroupSelect01" style="background-color: #e9ecef;">
+										<option selected value="s">seconds</option>
+										<option value="h">hours</option>
+										<option value="d">days</option>
+										<option value="y">years</option>
+									</select>
+								</div>
+							</div>
+							<div class="col" style="width:50%">
+								<label for="energy" class="form-label">Energy</label>
+								<div class="input-group mb-3">
+									{{form.energy(class="form-control", **{"aria-describedby":"basic-addon2"})}}
+									<span class="input-group-text" id="basic-addon2">keV</span>
+								</div>
+							  </div>
+						</div>
+						<br>
+						<div class="row">
+							<div class="col" style="width:50%">
+								<label for="release" class="form-label">Probability</label>
+								<div class="input-group mb-3">
+									{{form.release(class="form-control", **{"aria-describedby":"basic-addon2"})}}
+									<span class="input-group-text" id="basic-addon2">%</span>
+								</div>
+							</div>
+							<div class="col" style="width:50%">
+								<label for="resonance" class="form-label">Resonance energy</label>
+								<div class="input-group mb-3">
+									{{form.resonance(class="form-control", **{"aria-describedby":"basic-addon2"})}}
+									<span class="input-group-text" id="basic-addon2">eV</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<br>
+				    <input type="submit" class="btn btn-primary">
+				  </div>
+				  <div class="card-footer text-muted">
+					Click <a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal"> here </a> to delete experiment
+				  </div>
+				</div>
+			</div>
+		</form>
+		<script src="{{url_for('static', filename='chart.js')}}"></script>
+			
+		</script>
+	{% endblock %}
