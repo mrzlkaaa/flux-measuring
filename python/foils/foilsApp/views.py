@@ -30,6 +30,23 @@ def add_foil():
         return redirect(url_for("view.foils_store"))
     return render_template("foilsApp/add-foil-data.html", form=form)
 
+@view.route("/edit/<nuclide>", methods = ['GET', 'POST'])
+def edit_foil(nuclide):
+    instance = FoilsStore.query.filter(FoilsStore.nuclide==nuclide).first()
+    form = AddFoil()
+    form.nuclide.data = instance.nuclide
+    # if request.method == "POST":
+        # print(request.form.get("half_life_type"), request.form.get("half_life"))
+        # half_life = half_life_converter(request.form.get("half_life_type"), request.form.get("half_life"))
+        # print(half_life)
+        # new = FoilsStore(nuclide=request.form.get("nuclide").upper(), cross_section=request.form.get("cross_section"), 
+        #                  abundance=request.form.get("abundance"), half_life=half_life, 
+        #                  energy=request.form.get("energy"), release=request.form.get("release"), resonance=request.form.get("resonance"), 
+        #                  endf_data=request.form.get("endf_data"))
+        # db.session.add(new)
+        # db.session.commit()
+        # return redirect(url_for("view.foils_store"))
+    return render_template("foilsApp/edit-foil-data.html", form=form)
 
 @view.route("/foils-data", methods=["GET", "POST"])
 def foils_store():

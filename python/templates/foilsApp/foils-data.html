@@ -49,8 +49,12 @@
 						<a href="#" class="btn btn-primary">Edit</a>
 					</div>
 					<div class="card-footer text-muted">
-						2 days ago
-					  </div>
+						{% if i.endf_data  %}
+							{{i.endf_data}}
+						{% else %}
+							No link avaliable
+						{% endif %}
+					</div>
 				</div>
 				<br>
 			</div>

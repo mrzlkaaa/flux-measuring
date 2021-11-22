@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+	{% block title %}
+	<title> Experiment </title>
+	{% endblock %}
+	{% block content %}
+		<form method="POST", enctype="multipart/form-data"> 
+			{{ form.csrf_token }}
+			<div class='main-box'>
+				<div class="card text-center">
+				  <div class="card-body">
+					<div class="container">
+						<div class="row">
+							<div class="col" style="width:50%">
+								<label for="nuclide" class="form-label">Nuclide</label>
+								{{form.nuclide(class="form-control")}}
+							  </div>
+							<div class="col" style="width:50%">
+							  <label for="cross_section" class="form-label">Cross section</label>
+							  {{form.cross_section(class="form-control")}}
+							</div>
+						</div>
+						<br>
+						<div class="row">
+							<div class="col" style="width:50%">
+							  <label for="abundance" class="form-label">Abundance</label>
+							  {{form.abundance(class="form-control")}}
+							</div>
+							<div class="col" style="width:50%">
+								<label for="half_life" class="form-label">Half-life</label>
+								{{form.half_life(class="form-control")}}
+							</div>
+						</div>
+						<br>
+						<div class="row">
+							<div class="col" style="width:50%">
+								<label for="energy" class="form-label">Energy</label>
+								{{form.energy(class="form-control")}}
+							</div>
+							<div class="col" style="width:50%">
+							  <label for="resonance" class="form-label">Resonance</label>
+							  {{form.resonance(class="form-control")}}
+							</div>
+						</div>
+					</div>
+					<br>
+				    <input type="submit" class="btn btn-primary">
+				  </div>
+				  
+				</div>
+			</div>
+		</form>
+		<br>
+		</div>
+			
+		</script>
+	{% endblock %}
