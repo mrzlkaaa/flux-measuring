@@ -13,18 +13,48 @@
 </head>
 <body>
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-	  <div class="container-fluid">
-	    <a class="navbar-brand" href="#">IRT-T</a>
-	    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-	      <span class="navbar-toggler-icon"></span>
-	    </button>
-	    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-	      <div class="navbar-nav">
-	        <a class="nav-link active" aria-current="page" href='#'>Create</a>
-	        <a class="nav-link active" href='#'>List</a>
-	      </div>
-	    </div>
-	  </div>
+		<div class="container-fluid">
+			<a class="navbar-brand" href="#">IRT-T WRLD</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			  <span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			  <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+					  Wire detectors
+					</a>
+					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<li><a class="dropdown-item" href="http://localhost:5000/add_wire_experiment">Add experiment</a></li>
+						<li><hr class="dropdown-divider"></li>
+						<li><a class="dropdown-item" href="http://localhost:5000/list_wire_experiments">List of experiments</a></li>
+					</ul>
+				  </li>
+				<li class="nav-item dropdown">
+					<a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Activation detectors</a>
+					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<li><a class="dropdown-item" href="#">Add experiment</a></li>
+						<li><hr class="dropdown-divider"></li>
+						<li><a class="dropdown-item" href="#">List of experiments</a></li>
+					</ul>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+						Detector params
+					</a>
+					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<li><a class="dropdown-item" href="http://localhost:5001/add-detector-param">Add new nuclide</a></li>
+						<li><hr class="dropdown-divider"></li>
+						<li><a class="dropdown-item" href="http://localhost:5001/list_detector_params">List of all nuclides</a></li>
+					</ul>
+				</li>
+			  </ul>
+			  <form class="d-flex">
+				<input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+				<button class="btn btn-outline-success" type="submit">Search</button>
+			  </form>
+			</div>
+		</div>
 	</nav>
 	<div style="height:50px"> </div>
 	{% block content %}

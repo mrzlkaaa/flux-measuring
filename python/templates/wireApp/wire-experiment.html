@@ -29,7 +29,7 @@
 						</div>
 						<div class="row">
 							<div class="col" style="width:50%">
-								<a href="{{url_for('view.edit_experiment', name=data.name)}}" class="btn btn-primary">Edit</a>
+								<a href="{{url_for('view.edit_wire_experiment', name=data.name)}}" class="btn btn-primary">Edit</a>
 							</div>
 						</div>
 					</div>
@@ -89,7 +89,7 @@
 		<div class="samples-box">
 			<div class='row'>
 				<div class='col center-text'>
-					<form action='{{url_for("view.export_experiment", name=data.name)}}' method="POST", enctype="multipart/form-data"> 
+					<form action='{{url_for("view.export_wire_experiment", name=data.name)}}' method="POST", enctype="multipart/form-data"> 
 						<input type="submit" class="btn btn-primary" value="Export to .xlsx"> <br> <br>
 						<a href="http://localhost:8080/api/experiment/{{data.id}}" class="btn btn-primary">Go to API</a>
 					</form>
@@ -113,7 +113,7 @@
 							<th scope="row">{{i.name}}</th>
 							<td>{{i.mass}}</td>
 							<td>{{'%0.2e' % i.activity}}</td>
-							<td><a href="{{url_for('view.edit_sample', name=data.name, sample_id=i.name)}}">Edit</a></td>
+							<td><a href="{{url_for('view.edit_wire_sample', name=data.name, sample_id=i.name)}}">Edit</a></td>
 						  </tr>
 						</tbody>
 						{% endfor %}
@@ -123,13 +123,13 @@
 					<canvas id="myChart" width="400" height="400"></canvas>
 				</div>
 		</div>
-		<form action='{{url_for("view.delete_experiment", name=data.name)}}' method="POST", enctype="multipart/form-data">
+		<form action='{{url_for("view.delete_wire_experiment", name=data.name)}}' method="POST", enctype="multipart/form-data">
 			<!-- Modal -->
 			<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<div class="modal-header">
-						<h5 class="modal-title" id="deleteModalLabel">Are you sure on deleting refueling instance?</h5>
+						<h5 class="modal-title" id="deleteModalLabel">Are you sure on deleting instance?</h5>
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 						<div class="modal-body">

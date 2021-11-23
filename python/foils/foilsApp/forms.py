@@ -7,6 +7,6 @@ class AddFoil(Form):
     abundance = DecimalField("abundance", validators=[DataRequired(), NumberRange(min=0, max=None)])
     half_life = DecimalField("half-life", validators=[DataRequired(), NumberRange(min=0, max=None)])
     energy = StringField("energy", validators=[DataRequired(), NumberRange(min=0, max=None)])
-    release = DecimalField("release", validators=[DataRequired(), NumberRange(min=0, max=None)])
+    release = StringField("release", validators=[DataRequired()])
     resonance = DecimalField("resonance")
     endf_data = StringField("endf_data")

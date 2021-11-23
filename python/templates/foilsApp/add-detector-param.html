@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 	{% block title %}
-	<title> Experiment </title>
+	<title> Add new foil data </title>
 	{% endblock %}
 	{% block content %}
 		<form method="POST", enctype="multipart/form-data"> 
@@ -79,7 +79,7 @@
 				    <input type="submit" class="btn btn-primary">
 				  </div>
 				  <div class="card-footer text-muted">
-					Click <a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal"> here </a> to delete experiment
+					Click <a href="{{url_for('view.list_detector_params')}}"> here </a> to go back on list page
 				  </div>
 				</div>
 			</div>
