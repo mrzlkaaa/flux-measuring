@@ -18,6 +18,9 @@
 							<div class="col" style="width:50%">
 								<p class="form-label">Irradiation time</p>
 							</div>
+							<div class="col" style="width:50%">
+								<p class="form-label">Foil type</p>
+							</div>
 						</div>
 						<div class="row">
 							<div class="col" style="width:50%">
@@ -26,10 +29,13 @@
 							<div class="col" style="width:50%">
 								<label class="form-label">{{data.irradiation_time}}</label>
 							</div>
+							<div class="col" style="width:50%">
+								<label class="form-label">{{data.foil_type}}</label>
+							</div>
 						</div>
 						<div class="row">
 							<div class="col" style="width:50%">
-								<a href="{{url_for('view.edit_wire_experiment', name=data.name)}}" class="btn btn-primary">Edit</a>
+								<a href="{{url_for('view.edit_wire_experiment', id=data.id)}}" class="btn btn-primary">Edit</a>
 							</div>
 						</div>
 					</div>
@@ -62,16 +68,16 @@
 						<br>
 						<div class="row">
 							<div class="col" style="width:50%">
-							  <label for="Foil-type" class="form-label">Foil type</label>
+								<label for="Mass" class="form-label">Mass</label>
+								<input name="Mass" class="form-control" type="number">
+							</div>
+							<div class="col" style="width:50%">
+							  <!-- <label for="Foil-type" class="form-label">Foil type</label>
 							  <select name="Foil-type" class="form-select" aria-label="Default select example">
 								<option selected value="1">One</option>
 								<option value="2">Two</option>
 								<option value="3">Three</option>
-							  </select>
-							</div>
-							<div class="col" style="width:50%">
-							  <label for="Mass" class="form-label">Mass</label>
-							  <input name="Mass" class="form-control" type="number" step="0.0001">
+							  </select> -->
 							</div>
 						</div>
 					</div>
@@ -113,7 +119,7 @@
 							<th scope="row">{{i.name}}</th>
 							<td>{{i.mass}}</td>
 							<td>{{'%0.2e' % i.activity}}</td>
-							<td><a href="{{url_for('view.edit_wire_sample', name=data.name, sample_id=i.name)}}">Edit</a></td>
+							<td><a href="{{url_for('view.edit_wire_sample', id=data.id, sample_id=i.name)}}">Edit</a></td>
 						  </tr>
 						</tbody>
 						{% endfor %}
@@ -123,7 +129,7 @@
 					<canvas id="myChart" width="400" height="400"></canvas>
 				</div>
 		</div>
-		<form action='{{url_for("view.delete_wire_experiment", name=data.name)}}' method="POST", enctype="multipart/form-data">
+		<form action='{{url_for("view.delete_wire_experiment", id=data.id)}}' method="POST", enctype="multipart/form-data">
 			<!-- Modal -->
 			<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
 				<div class="modal-dialog">
@@ -145,6 +151,4 @@
 		</form>
 		</div>
 		<script src="{{url_for('static', filename='chart.js')}}"></script>
-			
-		</script>
 	{% endblock %}

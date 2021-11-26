@@ -1,4 +1,5 @@
 from flask import request, render_template, Blueprint, redirect, url_for
+from . import template_prefix
 from .forms import AddFoil
 from .model import *
 
@@ -28,7 +29,7 @@ def add_detector_param():
         db.session.add(new)
         db.session.commit()
         return redirect(url_for("view.list_detector_params"))
-    return render_template("foilsApp/add-detector-param.html", form=form)
+    return render_template(f"{template_prefix}/add-detector-param.html", form=form)
 
 @view.route("/edit/<nuclide>", methods = ['GET', 'POST'])
 def edit_detector_param(nuclide):
@@ -47,13 +48,13 @@ def edit_detector_param(nuclide):
         instance.resonance, instance.endf_data = request.form.get("resonance"), request.form.get("endf_data")
         db.session.commit()
         return redirect(url_for("view.list_detector_params"))
-    return render_template("foilsApp/edit-detector-param.html", form=form)
+    return render_template(f"{template_prefix}/edit-detector-param.html", form=form)
 
 @view.route("/list_detector_params", methods=["GET", "POST"])
 def list_detector_params():
     listed = FoilsStore.query.all()
     print(listed)
-    return render_template("foilsApp/list-detector-params.html", list=listed)
+    return render_template(f"{template_prefix}/list-detector-params.html", list=listed)
 
 @view.route("/delete/<nuclide>", methods=["GET", "POST"])
 def delete_detector_param(nuclide):

@@ -17,7 +17,13 @@
 							<div class="col" style="width:50%">
 								<label for="Experiment" class="form-label">Experiment name</label>
 								<input name="Experiment" class="form-control" type="text">
-							  </div>
+							</div>
+							<div class="col" style="width:50%">
+								<label for="Foil-type" class="form-label">Foil type</label>
+								<select name="Foil-type" class="form-select" aria-label="Default select example">
+								  <option selected>Choose detector type</option>
+								</select>
+							</div>
 						</div>
 						<br>
 						<div class="row">
@@ -31,6 +37,7 @@
 						  </div>
 						</div>
 						<br>
+						
 					</div>
 					<br>
 				    <input type="submit" class="btn btn-primary">
@@ -38,4 +45,5 @@
 				</div>
 			</div>
 		</form>
+		<script src="{{url_for('static', filename='populate_select.js')}}"></script>
 	{% endblock %}

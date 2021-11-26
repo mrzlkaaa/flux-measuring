@@ -1,8 +1,10 @@
 import xlsxwriter
 import os
+import time
+import requests
 from flask import render_template, redirect, url_for, Blueprint, request, send_from_directory
 from datetime import timedelta
-from . import create_app
+from . import create_app, template_prefix
 from .model import *
 from .handler import *
 from collections import defaultdict
@@ -17,27 +19,29 @@ def add_wire_experiment():
         name = request.form["Experiment"]
         irr_time  = (conver_datetime(request.form["Irr-finished"]) - conver_datetime(request.form["Irr-started"])).total_seconds()
         date = conver_datetime(request.form["Irr-finished"]).date()
-        instance = Experiment(name=name, date=date, irradiation_finished=request.form["Irr-finished"], irradiation_time=irr_time, power=1)
+        instance = Experiment(name=name, date=date, irradiation_finished=request.form["Irr-finished"], 
+                              irradiation_time=irr_time, power=1, foil_type=request.form["Foil-type"])
         db.session.add(instance)
         db.session.commit()
         return redirect(url_for("view.wire_experiments_list"))
-    return render_template("wireApp/add-wire-experiment.html")
+    return render_template(f"{template_prefix}/add-wire-experiment.html")
 
 @view.route("/list_wire_experiments", methods=["GET"])
 def wire_experiments_list():
     listed = Experiment.query.all()
-    return render_template("wireApp/list-wire-experiments.html", list=listed)
-
+    return render_template(f"{template_prefix}/list-wire-experiments.html", list=listed)
 
 @view.route("/wire_experiment/<id>", methods=["GET", "POST"])
 def detail_wire_experiment(id):
+    # r = requests.get("http://localhost:8080/api/detector_params/nuclide/AU-197") #TODO dont forget to test internal call
+    # print(r.json())
     exper_instance = Experiment.query.filter(Experiment.id==int(id)).first()
     irr_fn = exper_instance.irradiation_finished
     irr_time = exper_instance.irradiation_time
     if request.method == "POST":
         sample_name = request.form["Id"]
         A, mass, cool_time, meas_time = activity(net_counts=request.form["Area"], irr_time=irr_time, irr_fn=irr_fn, meas_time=request.form["Meas-time"],
-                                            cool_fn=request.form["Cool-finished"], mass=request.form["Mass"])
+                                            cool_fn=request.form["Cool-finished"], mass=request.form["Mass"], foil_type=exper_instance.foil_type)
         print(A)
         add_sub_instance = Sample(name=sample_name, cooling_finished=request.form["Cool-finished"], area=request.form["Area"], 
                                 activity=A, cooling_time=cool_time, measuring_time=meas_time, mass=mass, expermt=exper_instance)
@@ -45,36 +49,37 @@ def detail_wire_experiment(id):
         print(add_sub_instance)
         db.session.commit()
         return redirect(url_for("view.detail_wire_experiment", id=id))
-    return render_template("wireApp/wire-experiment.html", data=exper_instance)
+    return render_template(f"{template_prefix}/wire-experiment.html", data=exper_instance)
 
-@view.route("/edit_wire_experiment/<name>", methods=["GET", "POST"])
-def edit_wire_experiment(name):
-    exper_instance = Experiment.query.filter(Experiment.name==name).first()
+@view.route("/edit_wire_experiment/<id>", methods=["GET", "POST"])
+def edit_wire_experiment(id):
+    exper_instance = Experiment.query.filter(Experiment.id==int(id)).first()
     started_time = exper_instance.irradiation_finished - timedelta(seconds=exper_instance.irradiation_time)
     if request.method == "POST":
         exper_instance.name, exper_instance.irradiation_finished = request.form["Experiment"], request.form["Irr-finished"]
         exper_instance.irradiation_time = (conver_datetime(request.form["Irr-finished"]) - conver_datetime( request.form["Irr-started"])).total_seconds()
-        exper_instance.date = conver_datetime(request.form["Irr-finished"]).date()
+        exper_instance.date, exper_instance.foil_type = conver_datetime(request.form["Irr-finished"]).date(), request.form["Foil-type"]
         db.session.commit()
-        return redirect(url_for("view.detail_wire_experiment", name=name))
-    return render_template("wireApp/edit-wire-experiment.html", data=exper_instance, irradiation_started=started_time)
+        return redirect(url_for("view.detail_wire_experiment", id=id))
+    return render_template(f"{template_prefix}/edit-wire-experiment.html", data=exper_instance, irradiation_started=started_time)
 
-@view.route("/edit_wire_experiment/<name>/<sample_id>", methods=["GET", "POST"])
-def edit_wire_sample(name, sample_id):
-    sample_instance = Sample.query.join(Experiment).filter(Experiment.name==name, Sample.name==int(sample_id)).first()
+@view.route("/edit_wire_experiment/<id>/<sample_id>", methods=["GET", "POST"])
+def edit_wire_sample(id, sample_id):
+    sample_instance = Sample.query.join(Experiment).filter(Experiment.id==int(id), Sample.name==int(sample_id)).first()
     if request.method == "POST":
-        exper_instance = Experiment.query.filter(Experiment.name==name).first()
+        exper_instance = Experiment.query.filter(Experiment.id==int(id)).first()
         irr_fn = exper_instance.irradiation_finished
         irr_time = exper_instance.irradiation_time
-        A, mass, cool_time, meas_time = activity(net_counts=request.form["Area"], irr_time=irr_time, irr_fn=irr_fn, meas_time=request.form["Meas-time"],
-                                                 cool_fn=request.form["Cool-finished"], mass=request.form["Mass"])
+        A, mass, cool_time, meas_time = activity(net_counts=request.form["Area"], irr_time=irr_time, irr_fn=irr_fn, 
+                                                 meas_time=request.form["Meas-time"],cool_fn=request.form["Cool-finished"], 
+                                                 mass=request.form["Mass"], foil_type=exper_instance.foil_type)
         sample_instance.cooling_finished, sample_instance.area, sample_instance.cooling_time = request.form["Cool-finished"], request.form["Area"], cool_time
         sample_instance.measuring_time, sample_instance.mass, sample_instance.activity = meas_time, mass, A
         sample_instance.name = request.form["Id"]
         db.session.flush()
         db.session.commit()
-        return redirect(url_for("view.detail_wire_experiment", id=exper_instance.id))
-    return render_template("wireApp/edit-wire-sample.html", data=sample_instance)
+        return redirect(url_for("view.detail_wire_experiment", id=id))
+    return render_template(f"{template_prefix}/edit-wire-sample.html", data=sample_instance)
 
 @view.route("/<name>/export", methods=["GET","POST"])
 def export_wire_experiment(name):
@@ -111,10 +116,10 @@ def export_wire_experiment(name):
                     wsh.write_column(2, num, i, datetime_format)
         return send_from_directory(app.config["DOWNLOAD_FOLDER"], "export.xlsx", as_attachment=True)
 
-@view.route("/<name>/delete", methods=["GET","POST"])
+@view.route("/<id>/delete", methods=["GET","POST"])
 def delete_wire_experiment(name):
     if request.method == "POST":
-        instance = Experiment.query.filter(Experiment.name==name).first()
+        instance = Experiment.query.filter(Experiment.id==int(id)).first()
         db.session.delete(instance)
         print(instance)
         db.session.commit()

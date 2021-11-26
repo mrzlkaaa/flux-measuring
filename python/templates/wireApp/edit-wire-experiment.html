@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 	{% block title %}
-	<title> Home Page </title>
+	<title> Edit Wire Experiment </title>
 	{% endblock %}
 	{% block content %}
 		<form method="POST", enctype="multipart/form-data"> 
@@ -17,7 +17,13 @@
 							<div class="col" style="width:50%">
 								<label for="Experiment" class="form-label">Experiment name</label>
 								<input name="Experiment" class="form-control" type="text" value="{{data.name}}">
-							  </div>
+							</div>
+							<div class="col" style="width:50%">
+								<label for="Foil-type" class="form-label">Foil type</label>
+								<select name="Foil-type" class="form-select" aria-label="Default select example">
+								  <option selected>{{data.foil_type}}</option>
+								</select>
+							</div>
 						</div>
 						<br>
 						<div class="row">
@@ -38,4 +44,5 @@
 				</div>
 			</div>
 		</form>
+		<script src="{{url_for('static', filename='populate_select.js')}}"></script>
 	{% endblock %}

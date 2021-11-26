@@ -13,6 +13,7 @@ class Experiment(db.Model):
     irradiation_finished = db.Column(db.DateTime(), default=func.now())
     irradiation_time = db.Column(db.Float)
     power = db.Column(db.Float)
+    foil_type = db.Column(db.String(20))
     samples = db.relationship('Sample', backref='expermt')
 
     def __repr__(self):

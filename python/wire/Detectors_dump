@@ -1,0 +1,254 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 12.8 (Debian 12.8-1.pgdg110+1)
+-- Dumped by pg_dump version 12.8 (Ubuntu 12.8-0ubuntu0.20.04.1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: alembic_version; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.alembic_version (
+    version_num character varying(32) NOT NULL
+);
+
+
+ALTER TABLE public.alembic_version OWNER TO postgres;
+
+--
+-- Name: experiment; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.experiment (
+    id integer NOT NULL,
+    name character varying(100),
+    date date,
+    irradiation_finished timestamp without time zone,
+    irradiation_time double precision,
+    power double precision
+);
+
+
+ALTER TABLE public.experiment OWNER TO postgres;
+
+--
+-- Name: experiment_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.experiment_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.experiment_id_seq OWNER TO postgres;
+
+--
+-- Name: experiment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.experiment_id_seq OWNED BY public.experiment.id;
+
+
+--
+-- Name: sample; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.sample (
+    id integer NOT NULL,
+    name integer,
+    cooling_finished timestamp without time zone,
+    area double precision,
+    cooling_time double precision,
+    measuring_time double precision,
+    mass double precision,
+    activity double precision,
+    exp_id integer
+);
+
+
+ALTER TABLE public.sample OWNER TO postgres;
+
+--
+-- Name: sample_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.sample_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.sample_id_seq OWNER TO postgres;
+
+--
+-- Name: sample_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.sample_id_seq OWNED BY public.sample.id;
+
+
+--
+-- Name: experiment id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.experiment ALTER COLUMN id SET DEFAULT nextval('public.experiment_id_seq'::regclass);
+
+
+--
+-- Name: sample id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.sample ALTER COLUMN id SET DEFAULT nextval('public.sample_id_seq'::regclass);
+
+
+--
+-- Data for Name: alembic_version; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.alembic_version (version_num) FROM stdin;
+d6f4ac7d4132
+\.
+
+
+--
+-- Data for Name: experiment; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.experiment (id, name, date, irradiation_finished, irradiation_time, power) FROM stdin;
+1	Irradiation copper on axial filter#2	2021-11-15	2021-11-15 16:05:00	600	1
+\.
+
+
+--
+-- Data for Name: sample; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.sample (id, name, cooling_finished, area, cooling_time, measuring_time, mass, activity, exp_id) FROM stdin;
+1	1	2021-11-16 13:57:00	23482	78720	15	0.2483	2296696.4671137994	1
+2	2	2021-11-16 14:04:00	22595	79140	15	0.2474	2232145.247633147	1
+3	3	2021-11-16 14:05:00	23777	79200	15	0.2531	2298103.852892504	1
+4	4	2021-11-16 14:05:00	24522	79200	15	0.2505	2394709.8255803566	1
+5	5	2021-11-16 14:06:00	25258	79260	15	0.2532	2442502.029838794	1
+6	6	2021-11-16 14:07:00	24789	79320	15	0.2366	2567668.069600836	1
+7	7	2021-11-16 14:07:00	26219	79320	15	0.2524	2545783.0244234554	1
+8	8	2021-11-16 14:08:00	25527	79380	15	0.2551	2454589.491058677	1
+9	9	2021-11-16 14:08:00	25928	79380	15	0.2538	2505918.550168995	1
+10	10	2021-11-16 14:09:00	24748	79440	15	0.247	2459957.7173171644	1
+11	11	2021-11-16 14:09:00	24265	79440	15	0.2528	2356609.989555981	1
+12	12	2021-11-16 14:10:00	25738	79500	15	0.2502	2527940.902729191	1
+13	13	2021-11-16 14:11:00	24419	79560	15	0.2447	2454529.5718484833	1
+14	14	2021-11-16 14:12:00	24190	79620	15	0.2512	2370748.7709151036	1
+15	15	2021-11-16 14:13:00	23601	79680	15	0.2461	2363105.0564577556	1
+16	16	2021-11-16 14:13:00	21976	79680	15	0.2529	2141233.62804746	1
+17	17	2021-11-16 14:14:00	22447	79740	15	0.2299	2408122.1428752528	1
+18	18	2021-11-16 14:14:00	24084	79740	15	0.2547	2332162.723014805	1
+19	19	2021-11-16 14:15:00	22508	79800	15	0.2564	2167070.294134373	1
+20	20	2021-11-16 14:15:00	21714	79800	15	0.2488	2154485.4761994197	1
+21	21	2021-11-16 14:16:00	21835	79860	15	0.2458	2194928.4539393703	1
+22	22	2021-11-16 14:13:00	22647	79680	15	0.2495	2236682.647370358	1
+23	23	2021-11-16 14:17:00	21623	79920	15	0.2527	2116190.1797927944	1
+24	24	2021-11-16 14:18:00	21599	79980	15	0.2473	2161963.9796085185	1
+25	25	2021-11-16 14:18:00	21531	79980	15	0.2561	2081102.8707466673	1
+26	26	2021-11-16 14:19:00	21929	80040	15	0.2467	2202335.81460946	1
+27	27	2021-11-16 14:19:00	21891	80040	15	0.2426	2235674.9862895594	1
+28	28	2021-11-16 14:21:00	21229	80160	15	0.2468	2135050.343859585	1
+29	29	2021-11-16 14:22:00	20971	80220	15	0.2497	2086504.250359696	1
+30	30	2021-11-16 14:22:00	19190	80220	15	0.2464	1934875.150743753	1
+31	31	2021-11-16 14:23:00	20916	80280	15	0.2525	2059827.557374642	1
+32	32	2021-11-16 14:23:00	19401	80280	15	0.2413	1999311.237858489	1
+33	33	2021-11-16 14:24:00	19764	80340	15	0.2505	1963702.377205133	1
+34	34	2021-11-16 14:24:00	20464	80340	15	0.2534	2009983.3849417248	1
+35	35	2021-11-16 14:25:00	20781	80400	15	0.2503	2068278.8032422222	1
+36	36	2021-11-16 14:26:00	20192	80460	15	0.2506	2009077.5315825478	1
+37	37	2021-11-16 14:26:00	18630	80460	15	0.2512	1849233.0458793326	1
+38	38	2021-11-16 14:27:00	20218	80520	15	0.2547	1981082.7234583518	1
+39	39	2021-11-16 14:27:00	19187	80520	15	0.2561	1869781.508569348	1
+40	40	2021-11-16 14:27:00	18422	80520	15	0.2547	1805099.7097413072	1
+41	41	2021-11-16 14:28:00	18277	80580	15	0.2605	1752610.80601471	1
+42	42	2021-11-16 14:28:00	16987	80580	15	0.2516	1686531.0876053	1
+43	43	2021-11-16 14:29:00	16391	80640	15	0.2543	1611544.5972148771	1
+44	44	2021-11-16 14:29:00	15568	80640	15	0.2627	1481685.3556619561	1
+\.
+
+
+--
+-- Name: experiment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.experiment_id_seq', 7, true);
+
+
+--
+-- Name: sample_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.sample_id_seq', 45, true);
+
+
+--
+-- Name: alembic_version alembic_version_pkc; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.alembic_version
+    ADD CONSTRAINT alembic_version_pkc PRIMARY KEY (version_num);
+
+
+--
+-- Name: experiment experiment_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.experiment
+    ADD CONSTRAINT experiment_name_key UNIQUE (name);
+
+
+--
+-- Name: experiment experiment_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.experiment
+    ADD CONSTRAINT experiment_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sample sample_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.sample
+    ADD CONSTRAINT sample_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sample sample_exp_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.sample
+    ADD CONSTRAINT sample_exp_id_fkey FOREIGN KEY (exp_id) REFERENCES public.experiment(id);
+
+
+--
+-- PostgreSQL database dump complete
+--
+
