@@ -5,7 +5,7 @@ import requests
 from flask import render_template, redirect, url_for, Blueprint, request, send_from_directory
 from datetime import timedelta
 from . import create_app, template_prefix
-from .model import *
+from .models import *
 from .handler import *
 from collections import defaultdict
 

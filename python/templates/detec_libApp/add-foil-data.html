@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+	{% block title %}
+	<title> Add new foil data </title>
+	{% endblock %}
+	{% block content %}
+		<form method="POST", enctype="multipart/form-data"> 
+			<div class='main-box'>
+				<div class="card text-center">
+				  <div class="card-body">
+					<div class="container">
+						<div class="row">
+							<div class="col" style="width:50%">
+								<label for="name" class="form-label">Foil name</label>
+								{{form.name(class="form-control")}}
+							</div>
+							<div class="col" style="width:50%">
+								<label for="nucleus_number" class="form-label">Nucleus number</label>
+								{{form.nucleus_number(class="form-control")}}
+							</div>
+						</div>
+						<br>
+						<div class="row">
+							<div class="col" style="width:50%">
+								<select name="Foil-type" class="form-select" aria-label="Default select example">
+									<option selected>Choose foil type</option>
+								</select>
+							</div>
+							<div class="col" style="width:50%"></div>
+						</div>
+						<br>
+					</div>
+					<br>
+				    <input type="submit" class="btn btn-primary">
+				  </div>
+				  <div class="card-footer text-muted">
+					Click <a href="#"> here </a> to go back on list page
+				  </div>
+				</div>
+			</div>
+		</form>
+		<script src="{{url_for('static', filename='populate_select.js')}}"></script>
+			
+		</script>
+	{% endblock %}

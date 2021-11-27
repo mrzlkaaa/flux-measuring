@@ -1,10 +1,10 @@
 from flask import request, render_template, Blueprint, redirect, url_for
 from . import template_prefix
-from .forms import AddFoil
+from .forms import AddDetParams
 from .model import *
 
 
-view = Blueprint('view', __name__)
+params = Blueprint('params', __name__)
 
 def half_life_converter(key, value):
     value = float(value)
@@ -15,9 +15,9 @@ def half_life_converter(key, value):
     return value
 
 
-@view.route("/add-detector-param", methods = ['GET', 'POST'])
+@params.route("/add-detector-param", methods = ['GET', 'POST'])
 def add_detector_param():
-    form = AddFoil()
+    form = AddDetParams()
     if request.method == "POST":
         print(request.form.get("half_life_type"), request.form.get("half_life"))
         half_life = half_life_converter(request.form.get("half_life_type"), request.form.get("half_life"))
@@ -31,10 +31,10 @@ def add_detector_param():
         return redirect(url_for("view.list_detector_params"))
     return render_template(f"{template_prefix}/add-detector-param.html", form=form)
 
-@view.route("/edit/<nuclide>", methods = ['GET', 'POST'])
+@params.route("/edit/<nuclide>", methods = ['GET', 'POST'])
 def edit_detector_param(nuclide):
     instance = FoilsStore.query.filter(FoilsStore.nuclide==nuclide).first()
-    form = AddFoil()
+    form = AddDetParams()
     form.nuclide.data, form.cross_section.data, form.abundance.data = instance.nuclide, instance.cross_section, instance.abundance
     form.half_life.data, form.energy.data, form.release.data = instance.half_life, instance.energy, instance.release
     form.resonance.data, form.endf_data.data = instance.resonance, instance.endf_data
@@ -50,13 +50,13 @@ def edit_detector_param(nuclide):
         return redirect(url_for("view.list_detector_params"))
     return render_template(f"{template_prefix}/edit-detector-param.html", form=form)
 
-@view.route("/list_detector_params", methods=["GET", "POST"])
+@params.route("/list_detector_params", methods=["GET", "POST"])
 def list_detector_params():
     listed = FoilsStore.query.all()
     print(listed)
     return render_template(f"{template_prefix}/list-detector-params.html", list=listed)
 
-@view.route("/delete/<nuclide>", methods=["GET", "POST"])
+@params.route("/delete/<nuclide>", methods=["GET", "POST"])
 def delete_detector_param(nuclide):
     if request.method == "POST":
         on_delete = FoilsStore.query.filter(FoilsStore.nuclide==nuclide).first()

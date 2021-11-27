@@ -25,8 +25,10 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
 
-    from .views import view
-    app.register_blueprint(view, prefix="/")
+    from .param_views import params
+    from .foil_views import foils
+    app.register_blueprint(params, prefix="/")
+    app.register_blueprint(foils, prefix="/")
 
     return app
 
