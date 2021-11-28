@@ -1,4 +1,4 @@
-from wireApp import create_app
+from detectorsApp import create_app
 from flask_cors import CORS
 
 

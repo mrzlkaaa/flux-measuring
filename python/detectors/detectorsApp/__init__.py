@@ -28,7 +28,9 @@ def create_app(test_config=None):
     db.init_app(app)
     migrate.init_app(app, db)
     
-    from .views import view
-    app.register_blueprint(view, prefix="/")
+    from .wire_views import wire
+    from .foil_views import foil
+    app.register_blueprint(wire, prefix="/")
+    app.register_blueprint(foil, prefix="/")
 
     return app

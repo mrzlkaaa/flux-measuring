@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+	{% block title %}
+	<title> Experiment </title>
+	{% endblock %}
+	{% block content %}
+		<form method="POST", enctype="multipart/form-data"> 
+			<div class='main-box'>
+				<div class="card text-center">
+				  <div class="card-header">
+				    {{data.name}} from {{data.date}}
+				  </div>
+				  <div class="card-body">
+					<div class="container">
+						<div class="row">
+							<div class="col" style="width:50%">
+								<p class="form-label">Reactor power</p>
+							</div>
+							<div class="col" style="width:50%">
+								<p class="form-label">Irradiation time</p>
+							</div>
+							<div class="col" style="width:50%">
+								<p class="form-label">Foil type</p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col" style="width:50%">
+								<label class="form-label">{{data.power}}</label>
+							</div>
+							<div class="col" style="width:50%">
+								<label class="form-label">{{data.irradiation_time}}</label>
+							</div>
+							<div class="col" style="width:50%">
+								<label class="form-label">{{data.foil_type}}</label>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col" style="width:50%">
+								<a href="{{url_for('wire.edit_wire_experiment', id=data.id)}}" class="btn btn-primary">Edit</a>
+							</div>
+						</div>
+					</div>
+					<br>
+				    <h5 class="card-title">Fill the forms below to add new sample</h5> <br>
+					<!--* add container here -->
+					<div class="container">
+						<div class="row">
+							<div class="col" style="width:50%">
+								<label for="Id" class="form-label">ID</label>
+								<input name="Id" class="form-control" type="number" step="1">
+							  </div>
+							<div class="col" style="width:50%">
+							  <label for="Area" class="form-label">Area</label>
+							  <input name="Area" class="form-control" type="number" step="1">
+							</div>
+						</div>
+						<br>
+						<br>
+						<div class="row">
+							<div class="col" style="width:50%">
+							  <label for="Cool-finished" class="form-label">Cooling finished</label>
+							  <input name="Cool-finished" class="form-control" type="datetime-local" value="{{data.date.strftime('%Y-%m-%dT%H:%M')}}">
+							</div>
+							<div class="col" style="width:50%">
+								<label for="Meas-time" class="form-label">Measuring time</label>
+								<input name="Meas-time" class="form-control" type="number" step="1">
+							</div>
+						</div>
+						<br>
+						<div class="row">
+							<div class="col" style="width:50%">
+								<label for="Mass" class="form-label">Mass</label>
+								<input name="Mass" class="form-control" type="number">
+							</div>
+							<div class="col" style="width:50%">
+							  <!-- <label for="Foil-type" class="form-label">Foil type</label>
+							  <select name="Foil-type" class="form-select" aria-label="Default select example">
+								<option selected value="1">One</option>
+								<option value="2">Two</option>
+								<option value="3">Three</option>
+							  </select> -->
+							</div>
+						</div>
+					</div>
+					<br>
+				    <input type="submit" class="btn btn-primary">
+				  </div>
+				  <div class="card-footer text-muted">
+					Click <a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal"> here </a> to delete experiment
+				  </div>
+				</div>
+			</div>
+		</form>
+		<br>
+		<br>
+		<div class="samples-box">
+			<div class='row'>
+				<div class='col center-text'>
+					<form action='{{url_for("wire.export_wire_experiment", name=data.name)}}' method="POST", enctype="multipart/form-data"> 
+						<input type="submit" class="btn btn-primary" value="Export to .xlsx"> <br> <br>
+						<a href="http://localhost:8080/api/experiment/{{data.id}}" class="btn btn-primary">Go to API</a>
+					</form>
+				</div>
+			</div>
+			<br>
+			<div class='row'>
+				<div class='col center-text'>
+					<table class="table">
+						<thead>
+						  <tr>
+							<th scope="col">ID</th>
+							<th scope="col">Mass</th>
+							<th scope="col">Activity</th>
+							<th scope="col">Link</th>
+						  </tr>
+						</thead>
+						<tbody>
+						{% for i in data.samples | sort(attribute="id") %}
+						  <tr>
+							<th scope="row">{{i.name}}</th>
+							<td>{{i.mass}}</td>
+							<td>{{'%0.2e' % i.activity}}</td>
+							<td><a href="{{url_for('wire.edit_wire_sample', id=data.id, sample_id=i.name)}}">Edit</a></td>
+						  </tr>
+						</tbody>
+						{% endfor %}
+					  </table>
+				</div>
+				<div class='col center-text'>
+					<canvas id="myChart" width="400" height="400"></canvas>
+				</div>
+		</div>
+		<form action='{{url_for("wire.delete_wire_experiment", id=data.id)}}' method="POST", enctype="multipart/form-data">
+			<!-- Modal -->
+			<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+						<h5 class="modal-title" id="deleteModalLabel">Are you sure on deleting instance?</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							All data of {{data.name}} including {{data.samples|length}} sample(s) will be deleted!
+						</div>
+						<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+						<button type="submit" class="btn btn-danger">Delete!</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+		</div>
+		<script src="{{url_for('static', filename='chart.js')}}"></script>
+	{% endblock %}

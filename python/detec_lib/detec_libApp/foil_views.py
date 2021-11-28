@@ -18,16 +18,12 @@ def half_life_converter(key, value):
 @foils.route("/add-foil-data", methods = ['GET', 'POST'])
 def add_detector_param():
     form = AddDetector()
-    # if request.method == "POST": 
-    #     print(request.form.get("half_life_type"), request.form.get("half_life"))
-    #     half_life = half_life_converter(request.form.get("half_life_type"), request.form.get("half_life"))
-    #     print(half_life)
-    #     new = FoilsStore(nuclide=request.form.get("nuclide").upper(), cross_section=request.form.get("cross_section"), 
-    #                      abundance=request.form.get("abundance"), half_life=half_life, 
-    #                      energy=request.form.get("energy"), release=request.form.get("release"), resonance=request.form.get("resonance"), 
-    #                      endf_data=request.form.get("endf_data"))
-    #     db.session.add(new)
-    #     db.session.commit()
+    if request.method == "POST":
+        detec_params = FoilsStore.query.filter(FoilsStore.nuclide==request.form.get("Foil-type")).first()
+        print(detec_params.nuclide)
+        new = FoilData(name=request.form.get("name").upper(), nucleus_number=request.form.get("nucleus_number"), foil_params=detec_params)  
+        db.session.add(new)
+        db.session.commit()
         # return redirect(url_for("foils.list_detector_params"))
     return render_template(f"{template_prefix}/add-foil-data.html", form=form)
 

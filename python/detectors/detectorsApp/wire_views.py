@@ -9,11 +9,11 @@ from .models import *
 from .handler import *
 from collections import defaultdict
 
-view = Blueprint('view', __name__)
+wire = Blueprint('wire', __name__)
 
 app = create_app()
 
-@view.route('/add_wire_experiment', methods=["GET", "POST"])
+@wire.route('/add_wire_experiment', methods=["GET", "POST"])
 def add_wire_experiment():
     if request.method == "POST":
         name = request.form["Experiment"]
@@ -23,15 +23,15 @@ def add_wire_experiment():
                               irradiation_time=irr_time, power=1, foil_type=request.form["Foil-type"])
         db.session.add(instance)
         db.session.commit()
-        return redirect(url_for("view.wire_experiments_list"))
+        return redirect(url_for("wire.wire_experiments_list"))
     return render_template(f"{template_prefix}/add-wire-experiment.html")
 
-@view.route("/list_wire_experiments", methods=["GET"])
+@wire.route("/list_wire_experiments", methods=["GET"])
 def wire_experiments_list():
     listed = Experiment.query.all()
     return render_template(f"{template_prefix}/list-wire-experiments.html", list=listed)
 
-@view.route("/wire_experiment/<id>", methods=["GET", "POST"])
+@wire.route("/wire_experiment/<id>", methods=["GET", "POST"])
 def detail_wire_experiment(id):
     # r = requests.get("http://localhost:8080/api/detector_params/nuclide/AU-197") #TODO dont forget to test internal call
     # print(r.json())
@@ -48,10 +48,10 @@ def detail_wire_experiment(id):
         db.session.add(add_sub_instance)
         print(add_sub_instance)
         db.session.commit()
-        return redirect(url_for("view.detail_wire_experiment", id=id))
+        return redirect(url_for("wire.detail_wire_experiment", id=id))
     return render_template(f"{template_prefix}/wire-experiment.html", data=exper_instance)
 
-@view.route("/edit_wire_experiment/<id>", methods=["GET", "POST"])
+@wire.route("/edit_wire_experiment/<id>", methods=["GET", "POST"])
 def edit_wire_experiment(id):
     exper_instance = Experiment.query.filter(Experiment.id==int(id)).first()
     started_time = exper_instance.irradiation_finished - timedelta(seconds=exper_instance.irradiation_time)
@@ -60,10 +60,10 @@ def edit_wire_experiment(id):
         exper_instance.irradiation_time = (conver_datetime(request.form["Irr-finished"]) - conver_datetime( request.form["Irr-started"])).total_seconds()
         exper_instance.date, exper_instance.foil_type = conver_datetime(request.form["Irr-finished"]).date(), request.form["Foil-type"]
         db.session.commit()
-        return redirect(url_for("view.detail_wire_experiment", id=id))
+        return redirect(url_for("wire.detail_wire_experiment", id=id))
     return render_template(f"{template_prefix}/edit-wire-experiment.html", data=exper_instance, irradiation_started=started_time)
 
-@view.route("/edit_wire_experiment/<id>/<sample_id>", methods=["GET", "POST"])
+@wire.route("/edit_wire_experiment/<id>/<sample_id>", methods=["GET", "POST"])
 def edit_wire_sample(id, sample_id):
     sample_instance = Sample.query.join(Experiment).filter(Experiment.id==int(id), Sample.name==int(sample_id)).first()
     if request.method == "POST":
@@ -78,10 +78,10 @@ def edit_wire_sample(id, sample_id):
         sample_instance.name = request.form["Id"]
         db.session.flush()
         db.session.commit()
-        return redirect(url_for("view.detail_wire_experiment", id=id))
+        return redirect(url_for("wire.detail_wire_experiment", id=id))
     return render_template(f"{template_prefix}/edit-wire-sample.html", data=sample_instance)
 
-@view.route("/<name>/export", methods=["GET","POST"])
+@wire.route("/<name>/export", methods=["GET","POST"])
 def export_wire_experiment(name):
     if request.method == "POST":
         dct = defaultdict(list)
@@ -116,20 +116,20 @@ def export_wire_experiment(name):
                     wsh.write_column(2, num, i, datetime_format)
         return send_from_directory(app.config["DOWNLOAD_FOLDER"], "export.xlsx", as_attachment=True)
 
-@view.route("/<id>/delete", methods=["GET","POST"])
+@wire.route("/<id>/delete", methods=["GET","POST"])
 def delete_wire_experiment(name):
     if request.method == "POST":
         instance = Experiment.query.filter(Experiment.id==int(id)).first()
         db.session.delete(instance)
         print(instance)
         db.session.commit()
-        return redirect(url_for("view.wire_experiments_list"))
+        return redirect(url_for("wire.wire_experiments_list"))
 
-@view.route("/<id>/<sample_id>/delete", methods=["GET","POST"])
+@wire.route("/<id>/<sample_id>/delete", methods=["GET","POST"])
 def delete_wire_sample(id, sample_id):
     if request.method == "POST":
         sample_instance = Sample.query.join(Experiment).filter(Experiment.id==int(id), Sample.name==int(sample_id)).first()
         db.session.delete(sample_instance)
         print(sample_instance)
         db.session.commit()
-        return redirect(url_for("view.wire_experiments_list"))
+        return redirect(url_for("wire.wire_experiments_list"))
