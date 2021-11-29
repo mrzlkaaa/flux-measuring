@@ -6,7 +6,7 @@ from flask import render_template, redirect, url_for, Blueprint, request, send_f
 from datetime import timedelta
 from . import create_app, template_prefix
 from .models import db, Foil_Experiments, Foil_Samples
-from .handler import reaction_rate, conver_datetime
+from .handler import reaction_rate, conver_datetime, rates_and_thflux
 from collections import defaultdict
 
 foil = Blueprint('foil', __name__)
@@ -31,12 +31,15 @@ def foil_experiments_list():
     listed = Foil_Experiments.query.all()
     return render_template(f"{template_prefix}/list-foil-experiments.html", list=listed)
 
-@foil.route("/foil_experiment/<id>", methods=["GET", "POST"])
+@foil.route("/foil_experiment/<int:id>", methods=["GET", "POST"])
 def detail_foil_experiment(id):
-    exper_instance = Foil_Experiments.query.filter(Foil_Experiments.id==int(id)).first()
+    exper_instance = Foil_Experiments.query.filter(Foil_Experiments.id==id).first()
     irr_fn = exper_instance.irradiation_finished
     irr_time = exper_instance.irradiation_time
-    
+    cd_instances = Foil_Samples.query.filter(Foil_Samples.exp_id==id, Foil_Samples.cadmium_filter==True).all()
+    bare_instances = Foil_Samples.query.filter(Foil_Samples.exp_id==id, Foil_Samples.cadmium_filter==False).all()
+    rate_flux = rates_and_thflux(foil_type=exper_instance.foil_type, cd=cd_instances, 
+                                                                     bare=bare_instances)                                                                   
     if request.method == "POST":
         try:
             value = request.form["filter"]
@@ -48,47 +51,58 @@ def detail_foil_experiment(id):
         rate, cool_time, meas_time = reaction_rate(net_counts=request.form["Area"], irr_time=irr_time, irr_fn=irr_fn, 
                                                    meas_time=request.form["Meas-time"],cool_fn=request.form["Cool-finished"],
                                                    nucleus_number=nucleus_number, foil_type=exper_instance.foil_type)
-        print(rate)
         add_sub_instance = Foil_Samples(name=sample_name, nucleus_number=nucleus_number, 
                                         cooling_finished=request.form["Cool-finished"], area=request.form["Area"], 
                                         cooling_time=cool_time, measuring_time=meas_time, reaction_rate=rate, 
                                         cadmium_filter=fltr, expermt=exper_instance)
         db.session.add(add_sub_instance)
         db.session.flush()
-    #     print(add_sub_instance)
-    #     db.session.commit()
-    #     return redirect(url_for("foil.detail_foil_experiment", id=id))
-    return render_template(f"{template_prefix}/foil-experiment.html", data=exper_instance)
+        db.session.commit()
+        return redirect(url_for("foil.detail_foil_experiment", id=id))
+    return render_template(f"{template_prefix}/foil-experiment.html", data=exper_instance, 
+                           rate_flux = rate_flux)
 
-# @foil.route("/edit_wire_experiment/<id>", methods=["GET", "POST"])
-# def edit_wire_experiment(id):
-#     exper_instance = Experiment.query.filter(Experiment.id==int(id)).first()
-#     started_time = exper_instance.irradiation_finished - timedelta(seconds=exper_instance.irradiation_time)
-#     if request.method == "POST":
-#         exper_instance.name, exper_instance.irradiation_finished = request.form["Experiment"], request.form["Irr-finished"]
-#         exper_instance.irradiation_time = (conver_datetime(request.form["Irr-finished"]) - conver_datetime( request.form["Irr-started"])).total_seconds()
-#         exper_instance.date, exper_instance.foil_type = conver_datetime(request.form["Irr-finished"]).date(), request.form["Foil-type"]
-#         db.session.commit()
-#         return redirect(url_for("wire.detail_wire_experiment", id=id))
-#     return render_template(f"{template_prefix}/edit-wire-experiment.html", data=exper_instance, irradiation_started=started_time)
+@foil.route("/edit_foil_experiment/<int:id>", methods=["GET", "POST"])
+def edit_foil_experiment(id):
+    exper_instance = Foil_Experiments.query.filter(Foil_Experiments.id==id).first()
+    started_time = exper_instance.irradiation_finished - timedelta(seconds=exper_instance.irradiation_time)
+    if request.method == "POST":
+        exper_instance.name, exper_instance.irradiation_finished = request.form["Experiment"], request.form["Irr-finished"]
+        exper_instance.irradiation_time = (conver_datetime(request.form["Irr-finished"]) - conver_datetime( request.form["Irr-started"])).total_seconds()
+        exper_instance.date, exper_instance.foil_type = conver_datetime(request.form["Irr-finished"]).date(), request.form["Foil-type"]
+        db.session.commit()
+        return redirect(url_for("foil.detail_foil_experiment", id=id))
+    return render_template(f"{template_prefix}/edit-wire-experiment.html", data=exper_instance, irradiation_started=started_time)
 
-# @foil.route("/edit_wire_experiment/<id>/<sample_id>", methods=["GET", "POST"])
-# def edit_wire_sample(id, sample_id):
-#     sample_instance = Sample.query.join(Experiment).filter(Experiment.id==int(id), Sample.name==int(sample_id)).first()
-#     if request.method == "POST":
-#         exper_instance = Experiment.query.filter(Experiment.id==int(id)).first()
-#         irr_fn = exper_instance.irradiation_finished
-#         irr_time = exper_instance.irradiation_time
-#         A, mass, cool_time, meas_time = activity(net_counts=request.form["Area"], irr_time=irr_time, irr_fn=irr_fn, 
-#                                                  meas_time=request.form["Meas-time"],cool_fn=request.form["Cool-finished"], 
-#                                                  mass=request.form["Mass"], foil_type=exper_instance.foil_type)
-#         sample_instance.cooling_finished, sample_instance.area, sample_instance.cooling_time = request.form["Cool-finished"], request.form["Area"], cool_time
-#         sample_instance.measuring_time, sample_instance.mass, sample_instance.activity = meas_time, mass, A
-#         sample_instance.name = request.form["Id"]
-#         db.session.flush()
-#         db.session.commit()
-#         return redirect(url_for("wire.detail_wire_experiment", id=id))
-#     return render_template(f"{template_prefix}/edit-wire-sample.html", data=sample_instance)
+@foil.route("/edit_foil_experiment/<int:id>/<int:sample_id>", methods=["GET", "POST"])
+def edit_foil_sample(id, sample_id):
+    exper_instance = Foil_Experiments.query.filter(Foil_Experiments.id==id).first()
+    sample_instance = Foil_Samples.query.join(Foil_Experiments).filter(Foil_Experiments.id==id, 
+                                                                       Foil_Samples.id==sample_id).first()
+    if request.method == "POST":
+        try:
+            value = request.form["filter"]
+            fltr = True
+        except KeyError:
+            print("error")
+            fltr = False
+        except Exception as e:
+            print(e)
+        sample_name, nucleus_number = request.form["Name"].split("-")
+        print(sample_name, nucleus_number)
+        exper_instance = Foil_Experiments.query.filter(Foil_Experiments.id==int(id)).first()
+        irr_fn = exper_instance.irradiation_finished
+        irr_time = exper_instance.irradiation_time
+        rate, cool_time, meas_time = reaction_rate(net_counts=request.form["Area"], irr_time=irr_time, irr_fn=irr_fn, 
+                                                   meas_time=request.form["Meas-time"],cool_fn=request.form["Cool-finished"],
+                                                   nucleus_number=nucleus_number, foil_type=exper_instance.foil_type)
+        sample_instance.cooling_finished, sample_instance.area, sample_instance.cooling_time = request.form["Cool-finished"], request.form["Area"], cool_time
+        sample_instance.measuring_time, sample_instance.cadmium_filter, sample_instance.reaction_rate = meas_time, fltr, rate
+        sample_instance.name = sample_name
+        db.session.flush()
+        db.session.commit()
+        return redirect(url_for("foil.detail_foil_experiment", id=id))
+    return render_template(f"{template_prefix}/edit-foil-sample.html", parent=exper_instance, data=sample_instance)
 
 # @foil.route("/<name>/export", methods=["GET","POST"])
 # def export_wire_experiment(name):

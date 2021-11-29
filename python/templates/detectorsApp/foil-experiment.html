@@ -35,7 +35,7 @@
 						</div>
 						<div class="row">
 							<div class="col" style="width:50%">
-								<a href="#" class="btn btn-primary">Edit</a>
+								<a href="{{url_for('foil.edit_foil_experiment', id=data.id)}}" class="btn btn-primary">Edit</a>
 							</div>
 						</div>
 					</div>
@@ -108,29 +108,90 @@
 			<br>
 			<div class='row'>
 				<div class='col center-text'>
+					Bare
 					<table class="table">
 						<thead>
 						  <tr>
-							<th scope="col">ID</th>
-							<th scope="col">Mass</th>
-							<th scope="col">Activity</th>
+							<th scope="col">Name</th>
+							<th scope="col">Nucleus number</th>
+							<th scope="col">Flux</th>
 							<th scope="col">Link</th>
 						  </tr>
-						</thead>
-						<tbody>
+						</thead>	
 						{% for i in data.samples | sort(attribute="id") %}
-						  <tr>
-							<th scope="row">{{i.name}}</th>
-							<td>{{i.mass}}</td>
-							<td>{{'%0.2e' % i.activity}}</td>
-							<td><a href="#">Edit</a></td>
-						  </tr>
-						</tbody>
+							{% if not i.cadmium_filter %}
+							<tbody>
+							<tr>
+								<th scope="row">{{i.name}}</th>
+								<td>{{i.nucleus_number}}</td>
+								<td>{{'%0.2e' % i.reaction_rate}}</td>
+								<td><a href="{{url_for('foil.edit_foil_sample', id=data.id, sample_id=i.id)}}">Edit</a></td>
+							</tr>
+							</tbody>
+							{% endif %}
 						{% endfor %}
 					  </table>
 				</div>
 				<div class='col center-text'>
-					<canvas id="myChart" width="400" height="400"></canvas>
+					Cd
+					<table class="table">
+						<thead>
+						  <tr>
+							<th scope="col">Name</th>
+							<th scope="col">Nucleus number</th>
+							<th scope="col">Flux</th>
+							<th scope="col">Link</th>
+						  </tr>
+						</thead>
+						{% for i in data.samples | sort(attribute="id") %}
+							{% if i.cadmium_filter %}
+							<tbody>
+							<tr>
+								<th scope="row">{{i.name}}</th>
+								<td>{{i.nucleus_number}}</td>
+								<td>{{'%0.2e' % i.reaction_rate}}</td>
+								<td><a href="{{url_for('foil.edit_foil_sample', id=data.id, sample_id=i.id)}}">Edit</a></td>
+							</tr>
+							</tbody>
+							{% endif %}
+						{% endfor %}
+					  </table>
+				</div>
+				<div class='col-2 center-text'>
+					Overall
+					<table class="table">
+						<thead>
+						  <tr>
+							<th scope="col">Cd ratio</th>
+							<th scope="col">Thermal Flux</th>
+						  </tr>
+						</thead>
+							{% for i in rate_flux.seq %}
+							<tbody>
+							<tr>
+								<th scope="row">{{"%.2f" % i[0]}}</th>
+								<th scope="row">{{"%.2e" % i[1]}}</th>
+							</tr>
+							</tbody>
+							{% endfor %}
+					  </table>
+				</div>
+				<div class='col-2 center-text'>
+					Average
+					<table class="table">
+						<thead>
+						  <tr>
+							<th scope="col">Cd ratio</th>
+							<th scope="col">Thermal Flux</th>
+						  </tr>
+						</thead>
+						<tbody>
+						<tr>
+							<th scope="row">{{"%.2f" % rate_flux.aver[0]}}</th>
+							<th scope="row">{{"%.2e" % rate_flux.aver[1]}}</th>
+						</tr>
+						</tbody>
+					  </table>
 				</div>
 		</div>
 		<form action='#' method="POST", enctype="multipart/form-data">

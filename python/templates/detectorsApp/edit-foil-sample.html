@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+	{% block title %}
+	<title> Edit Sample </title>
+	{% endblock %}
+	{% block content %}
+		<form method="POST", enctype="multipart/form-data"> 
+			<div class='main-box'>
+				<div class="card text-center">
+				  <div class="card-header">
+				    Editing sample ID={{data.id}}
+				  </div>
+				  <div class="card-body">
+					<div class="container">
+						<div class="row">
+							<div class="col" style="width:50%">
+								<p class="form-label">Reactor power</p>
+							</div>
+							<div class="col" style="width:50%">
+								<p class="form-label">Irradiation time</p>
+							</div>
+							<div class="col" style="width:50%">
+								<p class="form-label">Foil type</p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col" style="width:50%">
+								<label class="form-label">{{parent.power}}</label>
+							</div>
+							<div class="col" style="width:50%">
+								<label class="form-label">{{parent.irradiation_time}}</label>
+							</div>
+							<div class="col" style="width:50%">
+								<label id="foil-type" class="form-label">{{parent.foil_type}}</label>
+							</div>
+						</div>
+					</div>
+				    <h5 class="card-title">Change and commit</h5> <br>
+					<!--* add container here -->
+					<div class="container">
+						<div class="row">
+							<div class="col" style="width:50%">
+								<label for="Name" class="form-label">Foil name</label>
+								<select name="Name" class="form-select" aria-label="Default select example">
+									<option value="{{data.name}}-{{data.nucleus_number}}" selected>{{data.name}}</option>
+								</select>
+							  </div>
+							<div class="col" style="width:50%">
+							  <label for="Area" class="form-label">Area</label>
+							  <input name="Area" class="form-control" type="number" step="1" value="{{data.area}}">
+							</div>
+						</div>
+						<br>
+						<br>
+						<div class="row">
+							<div class="col" style="width:50%">
+							  <label for="Cool-finished" class="form-label">Cooling finished</label>
+							  <input name="Cool-finished" class="form-control" type="datetime-local" value="{{data.cooling_finished.strftime('%Y-%m-%dT%H:%M')}}">
+							</div>
+							<div class="col" style="width:50%">
+								<label for="Meas-time" class="form-label">Measuring time</label>
+								<input name="Meas-time" class="form-control" type="number" step="1" value="{{data.measuring_time}}">
+							</div>
+						</div>
+						<br>
+						<div class="row">
+							<div class="col" style="width:50%">
+								{% if data.cadmium_filter==True %}
+								<div class="form-check form-switch">
+									<input name="filter" class="form-check-input" type="checkbox" id="chbox" checked>
+									<label class="form-check-label" for="chbox" >Cd filter</label>
+								</div>
+								{% else %}
+								<div class="form-check form-switch">
+									<input name="filter" class="form-check-input" type="checkbox" id="chbox">
+									<label class="form-check-label" for="chbox" >Cd filter</label>
+								</div>
+								{% endif %}
+							  </div>
+							<div class="col" style="width:50%">
+							</div>
+							
+						</div>
+					</div>
+					<br>
+				    <input type="submit" class="btn btn-primary" value="Commit">
+				  </div>
+				  <div class="card-footer text-muted">
+					Click <a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal"> here </a> to delete samle
+				  </div>
+				</div>
+			</div>
+		</form>
+		<br>
+		<br>
+		<form action='{{url_for("wire.delete_wire_sample", id=data.exp_id, sample_id=data.id)}}' method="POST", enctype="multipart/form-data">
+			<!-- Modal -->
+			<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+						<h5 class="modal-title" id="deleteModalLabel">Are you sure on deleting refueling instance?</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							All data of sample {{data.id}} will be deleted!
+						</div>
+						<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+						<button type="submit" class="btn btn-danger">Delete!</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+		<script src="{{url_for('static', filename='populate_select_by_foil_names.js')}}"></script>
+	{% endblock %}
