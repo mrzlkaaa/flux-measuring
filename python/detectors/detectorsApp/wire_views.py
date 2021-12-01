@@ -33,8 +33,8 @@ def wire_experiments_list():
 
 @wire.route("/wire_experiment/<id>", methods=["GET", "POST"])
 def detail_wire_experiment(id):
-    # r = requests.get("http://localhost:8080/api/detector_params/nuclide/AU-197") #TODO dont forget to test internal call
-    # print(r.json())
+    r = requests.get("http://localhost:8080/api/detector_params/nuclide/AU-197") #TODO dont forget to test internal call
+    print(r.json())
     exper_instance = Experiment.query.filter(Experiment.id==int(id)).first()
     irr_fn = exper_instance.irradiation_finished
     irr_time = exper_instance.irradiation_time
