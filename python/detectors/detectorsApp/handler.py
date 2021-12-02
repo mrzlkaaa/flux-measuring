@@ -3,7 +3,7 @@ import requests
 import json
 from datetime import datetime
 from collections import defaultdict
-from statistics import mean
+from statistics import mean, StatisticsError
 
 det_efficiency = lambda x: 7.50E+00*pow(x,-8.19E-01)
 conver_datetime = lambda x: datetime.fromisoformat(x)
@@ -44,18 +44,20 @@ def reaction_rate(*args, **kwargs):
                 *float(kwargs["nucleus_number"]))
     return rate, cool_time, meas_time
 
-
-
-
 def rates_and_thflux(*args, **kwargs):
-    rate_flux = {}
+    rate_flux = {"aver": None, "seq": None, "status": False}
     response = detector_params(kwargs["foil_type"])
     cd, bare = kwargs["cd"], kwargs["bare"]
-    aver_cd_rate, aver_bare_rate  = mean([i.reaction_rate for i in cd]), mean([i.reaction_rate for i in bare])
-    aver_cd_ratio = aver_bare_rate/aver_cd_rate
-    cd_ratio = [i.reaction_rate/aver_cd_rate for i in bare]
-    aver_th_flux = (aver_cd_ratio-1)*aver_bare_rate/(response["Cross_section"]*1E-24*aver_cd_ratio)
-    thflux = [(i-1)*j/(response["Cross_section"]*1E-24*i) for i,j in zip(cd_ratio, [i.reaction_rate for i in bare])]
-    rate_flux["aver"] = (aver_cd_ratio, aver_th_flux)
-    rate_flux["seq"] = zip(cd_ratio, thflux)
+    try:
+        aver_cd_rate, aver_bare_rate  = mean([i.reaction_rate for i in cd]), mean([i.reaction_rate for i in bare])
+        aver_cd_ratio = aver_bare_rate/aver_cd_rate
+        cd_ratio = [i.reaction_rate/aver_cd_rate for i in bare]
+        aver_th_flux = (aver_cd_ratio-1)*aver_bare_rate/(response["Cross_section"]*1E-24*aver_cd_ratio)
+        thflux = [(i-1)*j/(response["Cross_section"]*1E-24*i) for i,j in zip(cd_ratio, [i.reaction_rate for i in bare])]
+        rate_flux["aver"], rate_flux["seq"] = (aver_cd_ratio, aver_th_flux), tuple(zip(cd_ratio, thflux))
+        print(rate_flux["seq"])
+        rate_flux["status"] = True
+    except StatisticsError as e:
+        print(e)
+        # rate_flux = False
     return rate_flux

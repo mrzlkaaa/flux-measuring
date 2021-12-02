@@ -7,6 +7,6 @@ server {
             proxy_set_header X-Real-IP $remote_addr;
 
             # app comes from /etc/hosts, Docker added it for us!
-            proxy_pass http://flask:5000/;
+            proxy_pass http://localhost:5000/;
         }
 }

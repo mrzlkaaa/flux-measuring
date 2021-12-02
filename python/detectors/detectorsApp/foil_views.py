@@ -2,7 +2,7 @@ import xlsxwriter
 import os
 import time
 import requests
-from flask import render_template, redirect, url_for, Blueprint, request, send_from_directory
+from flask import render_template, redirect, url_for, Blueprint, request, send_from_directory, flash
 from datetime import timedelta
 from . import create_app, template_prefix
 from .models import db, Foil_Experiments, Foil_Samples
@@ -39,7 +39,7 @@ def detail_foil_experiment(id):
     cd_instances = Foil_Samples.query.filter(Foil_Samples.exp_id==id, Foil_Samples.cadmium_filter==True).all()
     bare_instances = Foil_Samples.query.filter(Foil_Samples.exp_id==id, Foil_Samples.cadmium_filter==False).all()
     rate_flux = rates_and_thflux(foil_type=exper_instance.foil_type, cd=cd_instances, 
-                                                                     bare=bare_instances)                                                                   
+                                                                    bare=bare_instances)                                                                   
     if request.method == "POST":
         try:
             value = request.form["filter"]

@@ -123,7 +123,7 @@
 							<tbody>
 							<tr>
 								<th scope="row">{{i.name}}</th>
-								<td>{{i.nucleus_number}}</td>
+								<td>{{"%0.2e" % i.nucleus_number}}</td>
 								<td>{{'%0.2e' % i.reaction_rate}}</td>
 								<td><a href="{{url_for('foil.edit_foil_sample', id=data.id, sample_id=i.id)}}">Edit</a></td>
 							</tr>
@@ -148,7 +148,7 @@
 							<tbody>
 							<tr>
 								<th scope="row">{{i.name}}</th>
-								<td>{{i.nucleus_number}}</td>
+								<td>{{"%0.2e" % i.nucleus_number}}</td>
 								<td>{{'%0.2e' % i.reaction_rate}}</td>
 								<td><a href="{{url_for('foil.edit_foil_sample', id=data.id, sample_id=i.id)}}">Edit</a></td>
 							</tr>
@@ -157,6 +157,7 @@
 						{% endfor %}
 					  </table>
 				</div>
+				{% if rate_flux.status == True %}
 				<div class='col-2 center-text'>
 					Overall
 					<table class="table">
@@ -176,6 +177,7 @@
 							{% endfor %}
 					  </table>
 				</div>
+				{% if rate_flux.seq | length > 1 %}
 				<div class='col-2 center-text'>
 					Average
 					<table class="table">
@@ -193,6 +195,8 @@
 						</tbody>
 					  </table>
 				</div>
+				{% endif %}
+				{% endif %}
 		</div>
 		<form action='#' method="POST", enctype="multipart/form-data">
 			<!-- Modal -->

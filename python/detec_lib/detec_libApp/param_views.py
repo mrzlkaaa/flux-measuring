@@ -28,7 +28,7 @@ def add_detector_param():
                          endf_data=request.form.get("endf_data"))
         db.session.add(new)
         db.session.commit()
-        return redirect(url_for("view.list_detector_params"))
+        return redirect(url_for("params.list_detector_params"))
     return render_template(f"{template_prefix}/add-detector-param.html", form=form)
 
 @params.route("/edit/<nuclide>", methods = ['GET', 'POST'])
@@ -47,7 +47,7 @@ def edit_detector_param(nuclide):
         instance.energy, instance.release = request.form.get("energy"), request.form.get("release")
         instance.resonance, instance.endf_data = request.form.get("resonance"), request.form.get("endf_data")
         db.session.commit()
-        return redirect(url_for("view.list_detector_params"))
+        return redirect(url_for("params.list_detector_params"))
     return render_template(f"{template_prefix}/edit-detector-param.html", form=form)
 
 @params.route("/list_detector_params", methods=["GET", "POST"])
@@ -62,4 +62,4 @@ def delete_detector_param(nuclide):
         on_delete = FoilsStore.query.filter(FoilsStore.nuclide==nuclide).first()
         db.session.delete(on_delete)
         db.session.commit()
-        return redirect(url_for("view.list_detector_params"))
+        return redirect(url_for("params.list_detector_params"))

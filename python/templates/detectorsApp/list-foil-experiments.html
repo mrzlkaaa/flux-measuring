@@ -11,9 +11,26 @@
 			<div class="col">
 				<div class="card text-center" style="width: 350px; margin:auto">
 					<!-- <img src="..." class="card-img-top" alt="..."> -->
-					<p class="card-title">{{i.date}}</p>
+					<div class="card-header">{{i.date}}</div>
 					<div class="card-body">
 						<h5 class="card-title">{{i.name}}</h5>
+						
+						<div class="row">
+							{% for j in i.samples %}
+							{% if j.cadmium_filter %}
+							<div class="col" style="width:50%">
+								<label for="cross_section" class="form-label">Bare</label>
+								<p name="cross_section" class="card-title">{{j.name}}</p>
+							</div>
+							{% else %}
+							  <div class="col" style="width:50%">
+								<label for="abundance" class="form-label">Cd</label>
+								<p name="abundance" class="card-title">{{j.name}}</p>
+							</div>
+							{% endif %}
+							{% endfor %}
+						</div>
+						
 						<p class="card-text"> {{i.foil_type}} used as a detector</p>
 						<!-- <p class="card-text"> There are {{i.samples| length}} samples here</p> -->
 						<a href="{{url_for('foil.detail_foil_experiment', id=i.id)}}" class="btn btn-primary">View</a>
