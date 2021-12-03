@@ -6,7 +6,7 @@ from flask import render_template, redirect, url_for, Blueprint, request, send_f
 from datetime import timedelta, datetime
 from . import create_app, template_prefix
 from .models import db, Foil_Experiments, Foil_Samples
-from .handler import reaction_rate, conver_datetime, rates_and_thflux
+from .handler import *
 from collections import defaultdict
 
 foil = Blueprint('foil', __name__)
@@ -20,7 +20,7 @@ def add_foil_experiment():
         irr_time  = (conver_datetime(request.form["Irr-finished"]) - conver_datetime(request.form["Irr-started"])).total_seconds()
         date = conver_datetime(request.form["Irr-finished"]).date()
         instance = Foil_Experiments(name=name, date=date, irradiation_finished=request.form["Irr-finished"], 
-                              irradiation_time=irr_time, power=1, foil_type=request.form["Foil-type"])
+                                    irradiation_time=irr_time, power=1, foil_type=request.form["Foil-type"])
         db.session.add(instance)
         db.session.commit()
         return redirect(url_for("foil.foil_experiments_list"))
@@ -36,10 +36,15 @@ def detail_foil_experiment(id):
     exper_instance = Foil_Experiments.query.filter(Foil_Experiments.id==id).first()
     irr_fn = exper_instance.irradiation_finished
     irr_time = exper_instance.irradiation_time
-    cd_instances = Foil_Samples.query.filter(Foil_Samples.exp_id==id, Foil_Samples.cadmium_filter==True).all()
-    bare_instances = Foil_Samples.query.filter(Foil_Samples.exp_id==id, Foil_Samples.cadmium_filter==False).all()
-    rate_flux = rates_and_thflux(foil_type=exper_instance.foil_type, cd=cd_instances, 
-                                                                    bare=bare_instances)                                                                   
+    print(exper_instance.cd_ratio)
+    exper_instance.cd_ratio, exper_instance.th_flux, exper_instance.cd_ratios, exper_instance.th_fluxes = ratios_and_thfluxes_display(
+        cd=exper_instance.cd_ratio, 
+        th_flux=exper_instance.th_flux)
+    # exper_instance.
+    # cd_instances = Foil_Samples.query.filter(Foil_Samples.exp_id==id, Foil_Samples.cadmium_filter==True).all()
+    # bare_instances = Foil_Samples.query.filter(Foil_Samples.exp_id==id, Foil_Samples.cadmium_filter==False).all()
+    # rate_flux = rates_and_thflux(foil_type=exper_instance.foil_type, cd=cd_instances, 
+    #                                                                 bare=bare_instances)                                                                   
     if request.method == "POST":
         try:
             value = request.form["filter"]
@@ -59,10 +64,14 @@ def detail_foil_experiment(id):
                                         cadmium_filter=fltr, expermt=exper_instance)
         db.session.add(add_sub_instance)
         db.session.flush()
-        db.session.commit()
+        cd_instances = Foil_Samples.query.filter(Foil_Samples.exp_id==id, Foil_Samples.cadmium_filter==True).all()
+        bare_instances = Foil_Samples.query.filter(Foil_Samples.exp_id==id, Foil_Samples.cadmium_filter==False).all()
+        exper_instance.cd_ratio, exper_instance.th_flux = ratios_and_thfluxes(foil_type=exper_instance.foil_type, cd=cd_instances, 
+                                     bare=bare_instances)
+        # print(exper_instance)
+        # # db.session.commit()
         return redirect(url_for("foil.detail_foil_experiment", id=id))
-    return render_template(f"{template_prefix}/foil-experiment.html", data=exper_instance, 
-                           rate_flux = rate_flux)
+    return render_template(f"{template_prefix}/foil-experiment.html", data=exper_instance)
 
 @foil.route("/edit_foil_experiment/<int:id>", methods=["GET", "POST"])
 def edit_foil_experiment(id):
@@ -102,6 +111,10 @@ def edit_foil_sample(id, sample_id):
         sample_instance.measuring_time, sample_instance.cadmium_filter, sample_instance.reaction_rate = meas_time, fltr, rate
         sample_instance.name = sample_name
         db.session.flush()
+        cd_instances = Foil_Samples.query.filter(Foil_Samples.exp_id==id, Foil_Samples.cadmium_filter==True).all()
+        bare_instances = Foil_Samples.query.filter(Foil_Samples.exp_id==id, Foil_Samples.cadmium_filter==False).all()
+        exper_instance.cd_ratio, exper_instance.th_flux = ratios_and_thfluxes(foil_type=exper_instance.foil_type, cd=cd_instances, 
+                                     bare=bare_instances)
         db.session.commit()
         return redirect(url_for("foil.detail_foil_experiment", id=id))
     return render_template(f"{template_prefix}/edit-foil-sample.html", parent=exper_instance, data=sample_instance)

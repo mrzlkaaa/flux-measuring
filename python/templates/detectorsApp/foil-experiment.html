@@ -155,6 +155,8 @@
 						{% endfor %}
 					  </table>
 				</div>
+				{{ data.cd_ratio }}
+				{# 
 				{% if rate_flux.status == True %}
 				<div class='col-2 center-text'>
 					Overall
@@ -175,26 +177,8 @@
 							{% endfor %}
 					  </table>
 				</div>
-				{% if rate_flux.seq | length > 1 %}
-				<div class='col-2 center-text'>
-					Average
-					<table class="table">
-						<thead>
-						  <tr>
-							<th scope="col">Cd ratio</th>
-							<th scope="col">Thermal Flux</th>
-						  </tr>
-						</thead>
-						<tbody>
-						<tr>
-							<th scope="row">{{"%.2f" % rate_flux.aver[0]}}</th>
-							<th scope="row">{{"%.2e" % rate_flux.aver[1]}}</th>
-						</tr>
-						</tbody>
-					  </table>
-				</div>
 				{% endif %}
-				{% endif %}
+				#}
 		</div>
 		<form action='#' method="POST", enctype="multipart/form-data">
 			<!-- Modal -->

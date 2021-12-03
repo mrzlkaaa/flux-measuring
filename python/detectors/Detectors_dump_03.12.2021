@@ -1,0 +1,422 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 12.8 (Debian 12.8-1.pgdg110+1)
+-- Dumped by pg_dump version 12.8 (Ubuntu 12.8-0ubuntu0.20.04.1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: alembic_version; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.alembic_version (
+    version_num character varying(32) NOT NULL
+);
+
+
+ALTER TABLE public.alembic_version OWNER TO postgres;
+
+--
+-- Name: experiment; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.experiment (
+    id integer NOT NULL,
+    name character varying(100),
+    date date,
+    irradiation_finished timestamp without time zone,
+    irradiation_time double precision,
+    power double precision,
+    foil_type character varying(20)
+);
+
+
+ALTER TABLE public.experiment OWNER TO postgres;
+
+--
+-- Name: experiment_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.experiment_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.experiment_id_seq OWNER TO postgres;
+
+--
+-- Name: experiment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.experiment_id_seq OWNED BY public.experiment.id;
+
+
+--
+-- Name: foil_experiments; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.foil_experiments (
+    id integer NOT NULL,
+    name character varying(100),
+    date date,
+    irradiation_finished timestamp without time zone,
+    irradiation_time double precision,
+    power double precision,
+    foil_type character varying(20)
+);
+
+
+ALTER TABLE public.foil_experiments OWNER TO postgres;
+
+--
+-- Name: foil_experiments_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.foil_experiments_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.foil_experiments_id_seq OWNER TO postgres;
+
+--
+-- Name: foil_experiments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.foil_experiments_id_seq OWNED BY public.foil_experiments.id;
+
+
+--
+-- Name: foil_samples; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.foil_samples (
+    id integer NOT NULL,
+    name character varying(100),
+    cooling_finished timestamp without time zone,
+    area double precision,
+    cooling_time double precision,
+    measuring_time double precision,
+    reaction_rate double precision,
+    cadmium_filter boolean,
+    exp_id integer,
+    nucleus_number double precision
+);
+
+
+ALTER TABLE public.foil_samples OWNER TO postgres;
+
+--
+-- Name: foil_samples_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.foil_samples_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.foil_samples_id_seq OWNER TO postgres;
+
+--
+-- Name: foil_samples_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.foil_samples_id_seq OWNED BY public.foil_samples.id;
+
+
+--
+-- Name: sample; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.sample (
+    id integer NOT NULL,
+    name integer,
+    cooling_finished timestamp without time zone,
+    area double precision,
+    cooling_time double precision,
+    measuring_time double precision,
+    mass double precision,
+    activity double precision,
+    exp_id integer
+);
+
+
+ALTER TABLE public.sample OWNER TO postgres;
+
+--
+-- Name: sample_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.sample_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.sample_id_seq OWNER TO postgres;
+
+--
+-- Name: sample_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.sample_id_seq OWNED BY public.sample.id;
+
+
+--
+-- Name: experiment id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.experiment ALTER COLUMN id SET DEFAULT nextval('public.experiment_id_seq'::regclass);
+
+
+--
+-- Name: foil_experiments id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.foil_experiments ALTER COLUMN id SET DEFAULT nextval('public.foil_experiments_id_seq'::regclass);
+
+
+--
+-- Name: foil_samples id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.foil_samples ALTER COLUMN id SET DEFAULT nextval('public.foil_samples_id_seq'::regclass);
+
+
+--
+-- Name: sample id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.sample ALTER COLUMN id SET DEFAULT nextval('public.sample_id_seq'::regclass);
+
+
+--
+-- Data for Name: alembic_version; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.alembic_version (version_num) FROM stdin;
+1170444df7ff
+\.
+
+
+--
+-- Data for Name: experiment; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.experiment (id, name, date, irradiation_finished, irradiation_time, power, foil_type) FROM stdin;
+1	Irradiation copper on axial filter#2	2021-11-15	2021-11-15 16:05:00	600	1	CU-63
+\.
+
+
+--
+-- Data for Name: foil_experiments; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.foil_experiments (id, name, date, irradiation_finished, irradiation_time, power, foil_type) FROM stdin;
+1	copper on hec1	2021-04-06	2021-04-06 12:18:00	900	1	CU-63
+3	AuFoilsOnHec1_10.02	2021-02-10	2021-02-10 13:28:00	2280	1	AU-197
+2	AuFoilsOnHec1_09.04	2021-04-09	2021-04-09 11:39:00	1200	1	AU-197
+\.
+
+
+--
+-- Data for Name: foil_samples; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.foil_samples (id, name, cooling_finished, area, cooling_time, measuring_time, reaction_rate, cadmium_filter, exp_id, nucleus_number) FROM stdin;
+9	3CU/192	2021-04-06 13:31:00	3998	4380	180	1.0539967053252156e-15	f	1	1.592e+20
+11	3CU/195	2021-04-06 13:27:00	3900	4140	180	1.0244277176615283e-15	f	1	1.592e+20
+10	3CU/193	2021-04-06 13:34:00	498	4560	1200	1.989999629663248e-17	t	1	1.592e+20
+12	6AU/253	2021-04-09 12:42:00	4023	3780	30	7.443687237371646e-14	f	2	9.87554e+18
+13	6AU/254	2021-04-09 13:46:00	1351	7620	60	1.2922947684995363e-14	t	2	9.66152e+18
+14	7AU/679	2021-02-10 14:43:00	1580	4500	450	1.7511947035272678e-14	t	3	5.81e+17
+15	7AU/689	2021-02-10 14:54:00	7894	5160	450	8.75146371222388e-14	f	3	5.82e+17
+\.
+
+
+--
+-- Data for Name: sample; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.sample (id, name, cooling_finished, area, cooling_time, measuring_time, mass, activity, exp_id) FROM stdin;
+20	20	2021-11-16 14:15:00	21714	79800	15	0.2488	206067525.6026471	1
+21	21	2021-11-16 14:16:00	21835	79860	15	0.2458	209935727.28835818	1
+22	22	2021-11-16 14:13:00	22647	79680	15	0.2495	213929341.27132913	1
+23	23	2021-11-16 14:17:00	21623	79920	15	0.2527	202404740.65472817	1
+24	24	2021-11-16 14:18:00	21599	79980	15	0.2473	206782813.17814866	1
+25	25	2021-11-16 14:18:00	21531	79980	15	0.2561	199048786.2818329	1
+26	26	2021-11-16 14:19:00	21929	80040	15	0.2467	210644210.35839698	1
+27	27	2021-11-16 14:19:00	21891	80040	15	0.2426	213832962.70305374	1
+28	28	2021-11-16 14:21:00	21229	80160	15	0.2468	204208636.4733063	1
+29	29	2021-11-16 14:22:00	20971	80220	15	0.2497	199565405.65290466	1
+30	30	2021-11-16 14:22:00	19190	80220	15	0.2464	185062716.39721596	1
+31	31	2021-11-16 14:23:00	20916	80280	15	0.2525	197013891.53251767	1
+32	32	2021-11-16 14:23:00	19401	80280	15	0.2413	191225758.65390983	1
+33	33	2021-11-16 14:24:00	19764	80340	15	0.2505	187819920.05094522	1
+34	34	2021-11-16 14:24:00	20464	80340	15	0.2534	192246504.89082083	1
+35	35	2021-11-16 14:25:00	20781	80400	15	0.2503	197822217.85610184	1
+1	1	2021-11-16 13:57:00	23482	78720	15	0.2483	219669412.1481632	1
+2	2	2021-11-16 14:04:00	22595	79140	15	0.2474	213495357.96216035	1
+3	3	2021-11-16 14:05:00	23777	79200	15	0.2531	219804022.7121191	1
+4	4	2021-11-16 14:05:00	24522	79200	15	0.2505	229043979.98736602	1
+5	5	2021-11-16 14:06:00	25258	79260	15	0.2532	233615104.45463583	1
+6	6	2021-11-16 14:07:00	24789	79320	15	0.2366	245586712.70550483	1
+7	7	2021-11-16 14:07:00	26219	79320	15	0.2524	243493499.6589447	1
+8	8	2021-11-16 14:08:00	25527	79380	15	0.2551	234771219.56978303	1
+9	9	2021-11-16 14:08:00	25928	79380	15	0.2538	239680629.4122823	1
+10	10	2021-11-16 14:09:00	24748	79440	15	0.247	235284667.9611423	1
+11	11	2021-11-16 14:09:00	24265	79440	15	0.2528	225399890.00758147	1
+12	12	2021-11-16 14:10:00	25738	79500	15	0.2502	241786975.3357805	1
+13	13	2021-11-16 14:11:00	24419	79560	15	0.2447	234765488.5479139	1
+14	14	2021-11-16 14:12:00	24190	79620	15	0.2512	226752205.3152952	1
+15	15	2021-11-16 14:13:00	23601	79680	15	0.2461	226021115.99395174	1
+16	16	2021-11-16 14:13:00	21976	79680	15	0.2529	204800041.7469873	1
+17	17	2021-11-16 14:14:00	22447	79740	15	0.2299	230326812.04545555	1
+18	18	2021-11-16 14:14:00	24084	79740	15	0.2547	223061611.20294765	1
+19	19	2021-11-16 14:15:00	22508	79800	15	0.2564	207271210.80761322	1
+36	36	2021-11-16 14:26:00	20192	80460	15	0.2506	192159863.80535212	1
+37	37	2021-11-16 14:26:00	18630	80460	15	0.2512	176871407.22768503	1
+38	38	2021-11-16 14:27:00	20218	80520	15	0.2547	189482277.48434785	1
+39	39	2021-11-16 14:27:00	19187	80520	15	0.2561	178836781.749002	1
+40	40	2021-11-16 14:27:00	18422	80520	15	0.2547	172650238.19451258	1
+41	41	2021-11-16 14:28:00	18277	80580	15	0.2605	167629894.0650104	1
+42	42	2021-11-16 14:28:00	16987	80580	15	0.2516	161309645.34875196	1
+43	43	2021-11-16 14:29:00	16391	80640	15	0.2543	154137501.1411988	1
+44	44	2021-11-16 14:29:00	15568	80640	15	0.2627	141717007.76630172	1
+\.
+
+
+--
+-- Name: experiment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.experiment_id_seq', 7, true);
+
+
+--
+-- Name: foil_experiments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.foil_experiments_id_seq', 3, true);
+
+
+--
+-- Name: foil_samples_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.foil_samples_id_seq', 15, true);
+
+
+--
+-- Name: sample_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.sample_id_seq', 45, true);
+
+
+--
+-- Name: alembic_version alembic_version_pkc; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.alembic_version
+    ADD CONSTRAINT alembic_version_pkc PRIMARY KEY (version_num);
+
+
+--
+-- Name: experiment experiment_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.experiment
+    ADD CONSTRAINT experiment_name_key UNIQUE (name);
+
+
+--
+-- Name: experiment experiment_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.experiment
+    ADD CONSTRAINT experiment_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: foil_experiments foil_experiments_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.foil_experiments
+    ADD CONSTRAINT foil_experiments_name_key UNIQUE (name);
+
+
+--
+-- Name: foil_experiments foil_experiments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.foil_experiments
+    ADD CONSTRAINT foil_experiments_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: foil_samples foil_samples_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.foil_samples
+    ADD CONSTRAINT foil_samples_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sample sample_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.sample
+    ADD CONSTRAINT sample_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: foil_samples foil_samples_exp_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.foil_samples
+    ADD CONSTRAINT foil_samples_exp_id_fkey FOREIGN KEY (exp_id) REFERENCES public.foil_experiments(id);
+
+
+--
+-- Name: sample sample_exp_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.sample
+    ADD CONSTRAINT sample_exp_id_fkey FOREIGN KEY (exp_id) REFERENCES public.experiment(id);
+
+
+--
+-- PostgreSQL database dump complete
+--
+

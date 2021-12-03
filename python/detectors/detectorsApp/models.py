@@ -41,6 +41,8 @@ class Foil_Experiments(db.Model):
     date = db.Column(db.Date(), default=func.current_date())
     irradiation_finished = db.Column(db.DateTime(), default=func.now())
     irradiation_time = db.Column(db.Float)
+    cd_ratio = db.Column(db.Text)
+    th_flux = db.Column(db.Text)
     power = db.Column(db.Float)
     foil_type = db.Column(db.String(20))
     samples = db.relationship('Foil_Samples', backref='expermt')

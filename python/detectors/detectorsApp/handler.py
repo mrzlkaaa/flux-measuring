@@ -44,20 +44,38 @@ def reaction_rate(*args, **kwargs):
                 *float(kwargs["nucleus_number"]))
     return rate, cool_time, meas_time
 
-def rates_and_thflux(*args, **kwargs):
-    rate_flux = {"aver": None, "seq": None, "status": False}
+def ratios_and_thfluxes(*args, **kwargs):
+    # rate_flux = {"aver": None, "seq": None, "status": False}
     response = detector_params(kwargs["foil_type"])
     cd, bare = kwargs["cd"], kwargs["bare"]
-    try:
-        aver_cd_rate, aver_bare_rate  = mean([i.reaction_rate for i in cd]), mean([i.reaction_rate for i in bare])
-        aver_cd_ratio = aver_bare_rate/aver_cd_rate
-        cd_ratio = [i.reaction_rate/aver_cd_rate for i in bare]
-        aver_th_flux = (aver_cd_ratio-1)*aver_bare_rate/(response["Cross_section"]*1E-24*aver_cd_ratio)
-        thflux = [(i-1)*j/(response["Cross_section"]*1E-24*i) for i,j in zip(cd_ratio, [i.reaction_rate for i in bare])]
-        rate_flux["aver"], rate_flux["seq"] = (aver_cd_ratio, aver_th_flux), tuple(zip(cd_ratio, thflux))
-        print(rate_flux["seq"])
-        rate_flux["status"] = True
-    except StatisticsError as e:
-        print(e)
-        # rate_flux = False
-    return rate_flux
+    aver_cd_rate, aver_bare_rate  = mean([i.reaction_rate for i in cd]), mean([i.reaction_rate for i in bare])
+    # aver_cd_ratio = aver_bare_rate/aver_cd_rate
+    cd_ratio = [i.reaction_rate/aver_cd_rate for i in bare]
+    # aver_th_flux = (aver_cd_ratio-1)*aver_bare_rate/(response["Cross_section"]*1E-24*aver_cd_ratio)
+    thflux = [(i-1)*j/(response["Cross_section"]*1E-24*i) for i,j in zip(cd_ratio, [i.reaction_rate for i in bare])]
+    ratios, th_fluxes = ",".join([str(i) for i in cd_ratio]), ",".join([str(i) for i in thflux])
+    return ratios, th_fluxes
+
+def ratios_and_thfluxes_display(*args, **kwargs):
+    cds, th_fluxes = [float(i) for i in kwargs["cd"].split(",")], [float(i) for i in kwargs["th_flux"].split(",")]
+    mean_cds, mean_th_fluxes = mean(cds), mean(th_fluxes)
+    return mean_cds, mean_th_fluxes, cds, th_fluxes
+
+# def rates_and_thflux(*args, **kwargs):
+#     rate_flux = {"aver": None, "seq": None, "status": False}
+#     response = detector_params(kwargs["foil_type"])
+#     cd, bare = kwargs["cd"], kwargs["bare"]
+#     try:
+#         aver_cd_rate, aver_bare_rate  = mean([i.reaction_rate for i in cd]), mean([i.reaction_rate for i in bare])
+#         aver_cd_ratio = aver_bare_rate/aver_cd_rate
+#         cd_ratio = [i.reaction_rate/aver_cd_rate for i in bare]
+#         aver_th_flux = (aver_cd_ratio-1)*aver_bare_rate/(response["Cross_section"]*1E-24*aver_cd_ratio)
+#         thflux = [(i-1)*j/(response["Cross_section"]*1E-24*i) for i,j in zip(cd_ratio, [i.reaction_rate for i in bare])]
+#         rate_flux["aver"], rate_flux["seq"] = (aver_cd_ratio, aver_th_flux), tuple(zip(cd_ratio, thflux))
+#         print(rate_flux["seq"])
+#         print(",".join([str(i[0]) for i in rate_flux["seq"]]))
+#         rate_flux["status"] = True
+#     except StatisticsError as e:
+#         print(e)
+#         # rate_flux = False
+#     return rate_flux
