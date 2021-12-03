@@ -31,7 +31,7 @@ def wire_experiments_list():
     listed = Experiment.query.all()
     return render_template(f"{template_prefix}/list-wire-experiments.html", list=listed)
 
-@wire.route("/wire_experiment/<id>", methods=["GET", "POST"])
+@wire.route("/wire_experiment/<int:id>", methods=["GET", "POST"])
 def detail_wire_experiment(id):
     r = requests.get("http://localhost:8080/api/detector_params/nuclide/AU-197") #TODO dont forget to test internal call
     print(r.json())
@@ -51,7 +51,7 @@ def detail_wire_experiment(id):
         return redirect(url_for("wire.detail_wire_experiment", id=id))
     return render_template(f"{template_prefix}/wire-experiment.html", data=exper_instance)
 
-@wire.route("/edit_wire_experiment/<id>", methods=["GET", "POST"])
+@wire.route("/edit_wire_experiment/<int:id>", methods=["GET", "POST"])
 def edit_wire_experiment(id):
     exper_instance = Experiment.query.filter(Experiment.id==int(id)).first()
     started_time = exper_instance.irradiation_finished - timedelta(seconds=exper_instance.irradiation_time)

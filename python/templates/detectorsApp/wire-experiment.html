@@ -97,11 +97,9 @@
 				<div class='col center-text'>
 					<form action='{{url_for("wire.export_wire_experiment", name=data.name)}}' method="POST", enctype="multipart/form-data"> 
 						<input type="submit" class="btn btn-primary" value="Export to .xlsx"> <br> <br>
-						<a href="http://localhost:8080/api/experiment/{{data.id}}" class="btn btn-primary">Go to API</a>
 					</form>
 				</div>
 			</div>
-			<br>
 			<div class='row'>
 				<div class='col center-text'>
 					<table class="table">

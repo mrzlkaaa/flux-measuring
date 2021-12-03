@@ -99,13 +99,11 @@
 		<div class="samples-box">
 			<div class='row'>
 				<div class='col center-text'>
-					<form action='#' method="POST", enctype="multipart/form-data"> 
+					<form action="{{url_for('foil.export_foil_experiment', id=data.id)}}" method="POST", enctype="multipart/form-data"> 
 						<input type="submit" class="btn btn-primary" value="Export to .xlsx"> <br> <br>
-						<a href="#" class="btn btn-primary">Go to API</a>
 					</form>
 				</div>
 			</div>
-			<br>
 			<div class='row'>
 				<div class='col center-text'>
 					Bare
@@ -114,7 +112,7 @@
 						  <tr>
 							<th scope="col">Name</th>
 							<th scope="col">Nucleus number</th>
-							<th scope="col">Flux</th>
+							<th scope="col">Rate</th>
 							<th scope="col">Link</th>
 						  </tr>
 						</thead>	
@@ -139,7 +137,7 @@
 						  <tr>
 							<th scope="col">Name</th>
 							<th scope="col">Nucleus number</th>
-							<th scope="col">Flux</th>
+							<th scope="col">Rate</th>
 							<th scope="col">Link</th>
 						  </tr>
 						</thead>
