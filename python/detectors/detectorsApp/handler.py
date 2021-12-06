@@ -8,18 +8,7 @@ from statistics import mean, StatisticsError
 det_efficiency = lambda x: 7.50E+00*pow(x,-8.19E-01)
 conver_datetime = lambda x: datetime.fromisoformat(x)
 
-
 detector_params = lambda x: requests.get(f"http://localhost:8080/api/detector_params/nuclide/{x}").json()
-
-# Na = 0.602
-# CU = {
-#     "M": 62.9296,
-#     "E": 511,
-#     "Release": 0.343,
-#     "Abundance": 0.6917,
-#     "Cross-Section":4.51,
-#     "Half-Life": 12.701*3600,
-# }
 
 def activity(*args, **kwargs):
     response = detector_params(kwargs["foil_type"])
@@ -45,37 +34,23 @@ def reaction_rate(*args, **kwargs):
     return rate, cool_time, meas_time
 
 def ratios_and_thfluxes(*args, **kwargs):
-    # rate_flux = {"aver": None, "seq": None, "status": False}
     response = detector_params(kwargs["foil_type"])
     cd, bare = kwargs["cd"], kwargs["bare"]
-    aver_cd_rate, aver_bare_rate  = mean([i.reaction_rate for i in cd]), mean([i.reaction_rate for i in bare])
-    # aver_cd_ratio = aver_bare_rate/aver_cd_rate
-    cd_ratio = [i.reaction_rate/aver_cd_rate for i in bare]
-    # aver_th_flux = (aver_cd_ratio-1)*aver_bare_rate/(response["Cross_section"]*1E-24*aver_cd_ratio)
+    try:
+        aver_cd_rate = mean([i.reaction_rate for i in cd])
+        cd_ratio = [i.reaction_rate/aver_cd_rate for i in bare]
+    except Exception as e:
+        print(e)
+        cd_ratio = [float(i) for i in cd.split(",")]
     thflux = [(i-1)*j/(response["Cross_section"]*1E-24*i) for i,j in zip(cd_ratio, [i.reaction_rate for i in bare])]
     ratios, th_fluxes = ",".join([str(i) for i in cd_ratio]), ",".join([str(i) for i in thflux])
     return ratios, th_fluxes
 
 def ratios_and_thfluxes_display(*args, **kwargs):
-    cds, th_fluxes = [float(i) for i in kwargs["cd"].split(",")], [float(i) for i in kwargs["th_flux"].split(",")]
-    mean_cds, mean_th_fluxes = mean(cds), mean(th_fluxes)
+    try:
+        cds, th_fluxes = [float(i) for i in kwargs["cd"].split(",")], [float(i) for i in kwargs["th_flux"].split(",")]
+        mean_cds, mean_th_fluxes = mean(cds), mean(th_fluxes)
+    except Exception as e:
+        print(e)
+        return 0, 0, [0], [0]
     return mean_cds, mean_th_fluxes, cds, th_fluxes
-
-# def rates_and_thflux(*args, **kwargs):
-#     rate_flux = {"aver": None, "seq": None, "status": False}
-#     response = detector_params(kwargs["foil_type"])
-#     cd, bare = kwargs["cd"], kwargs["bare"]
-#     try:
-#         aver_cd_rate, aver_bare_rate  = mean([i.reaction_rate for i in cd]), mean([i.reaction_rate for i in bare])
-#         aver_cd_ratio = aver_bare_rate/aver_cd_rate
-#         cd_ratio = [i.reaction_rate/aver_cd_rate for i in bare]
-#         aver_th_flux = (aver_cd_ratio-1)*aver_bare_rate/(response["Cross_section"]*1E-24*aver_cd_ratio)
-#         thflux = [(i-1)*j/(response["Cross_section"]*1E-24*i) for i,j in zip(cd_ratio, [i.reaction_rate for i in bare])]
-#         rate_flux["aver"], rate_flux["seq"] = (aver_cd_ratio, aver_th_flux), tuple(zip(cd_ratio, thflux))
-#         print(rate_flux["seq"])
-#         print(",".join([str(i[0]) for i in rate_flux["seq"]]))
-#         rate_flux["status"] = True
-#     except StatisticsError as e:
-#         print(e)
-#         # rate_flux = False
-#     return rate_flux

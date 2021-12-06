@@ -37,7 +37,18 @@
 						  </div>
 						</div>
 						<br>
-						
+						<div class="row">
+							<div class="col" style="width:50%">
+							  <div class="form-check form-switch">
+								<input name="cd-check" class="form-check-input" type="checkbox" id="chbox">
+								<label class="form-check-label" for="chbox">Add existing cd ratio?</label>
+							  </div>
+							</div>
+							<div id="cd-div" class="col" style="width:50%; display:none">
+								<input name="Cd-ratio" class="form-control" type="text">
+							</div>
+							<div id="empty-div" class="col" style="width:50%; display:block"></div>
+						</div>
 					</div>
 					<br>
 				    <input type="submit" class="btn btn-primary">
@@ -46,4 +57,19 @@
 			</div>
 		</form>
 		<script src="{{url_for('static', filename='populate_select.js')}}"></script>
+		<script>
+			$(document).ready(function(){
+				$("#chbox").click(function() {
+					if ($("#chbox").is(":checked")) {
+						console.log($("#chbox").prop("checked"))
+						$("#empty-div").css("display", "none");
+						$("#cd-div").css("display", "block");
+					} 
+					else {
+						$("#empty-div").css("display", "block");
+						$("#cd-div").css("display", "none");
+					}
+				});
+			})
+		</script>
 	{% endblock %}
