@@ -1,22 +1,59 @@
 version: "3"
 services:
-  flask:
-    container_name: python
-    build: ./python-app
+  detectors:
+    container_name: detectors
+    build: 
+      context: ./python
+      dockerfile: detec.Dockerfile
     environment:
-      - FLASK_APP=wire_app.py
-    ports:
-      - 5000:5000
+      - FLASK_APP=detectors_app.py
+      - PSQL_USER=${PSQL_USER}
+      - PSWD=${PSWD}
+      - PORT=${PORT}
+      - HOST=${HOST}
+      - DB=${DB}
+    expose:
+      - 5000
+    # ports:
+    #   - 5000:5000
   
-  golang:
-    container_name: go
-    build: ./api-builder
+  # lib:
+  #   container_name: lib
+  #   build: ./python/detec_lib
+  #   environment:
+  #     - FLASK_APP=detec_lib_app.py
+  #     - PSQL_USER=${PSQL_USER}
+  #     - PSWD=${PSWD}
+  #     - PORT=${PORT}
+  #     - HOST=${HOST}
+  #     - DB_lib=${DB_lib}
+  #   ports:
+  #     - 5001:5001
+
+  greetings:
+    container_name: greetings
+    build: 
+      context: ./python
+      dockerfile: greet.Dockerfile
+    environment:
+      - FLASK_APP=app.py
+    expose:
+      - 5002
+    # ports:
+    #   - 5002:5002
+
+  
+  proxy:
+    build: ./nginx
     restart: always
     ports:
-     - 8080:8080
-
-  # proxy:
-  #   build: ./nginx
+      - 80:80
+  
+  # golang:
+  #   container_name: go
+  #   build: ./api-builder
   #   restart: always
   #   ports:
-  #     - 80:80
+  #    - 8080:8080
+
+ 

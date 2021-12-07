@@ -1,12 +1,28 @@
+upstream greet_flask {
+    server greetings:5002;
+}
+
+upstream detectors_flask {
+    server detectors:5000;
+}
+
 server {
         listen 80;
         proxy_pass_header Server;
+        server_name irt-wrld;
 
         location / {
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
 
             # app comes from /etc/hosts, Docker added it for us!
-            proxy_pass http://localhost:5000/;
+            proxy_pass http://greet_flask;
+        }
+        location /foil/list_foil_experiments {
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+
+            # app comes from /etc/hosts, Docker added it for us!
+            proxy_pass http://detectors_flask/list_foil_experiments;
         }
 }
