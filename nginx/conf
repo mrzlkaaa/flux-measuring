@@ -9,7 +9,11 @@ upstream detectors_flask {
 server {
         listen 80;
         proxy_pass_header Server;
-        server_name irt-wrld;
+
+        location ^~ /static/  {
+            include  /etc/nginx/mime.types;
+            root /detectors/;
+        }
 
         location / {
             proxy_set_header Host $host;
@@ -18,11 +22,18 @@ server {
             # app comes from /etc/hosts, Docker added it for us!
             proxy_pass http://greet_flask;
         }
-        location /foil/list_foil_experiments {
+        location /list_foil_experiments/ {
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
 
             # app comes from /etc/hosts, Docker added it for us!
             proxy_pass http://detectors_flask/list_foil_experiments;
+        }
+        location ~* ^/foil_experiment/(.*) {
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+
+            # app comes from /etc/hosts, Docker added it for us!
+            proxy_pass http://detectors_flask/foil_experiment/$1$is_args$args;
         }
 }

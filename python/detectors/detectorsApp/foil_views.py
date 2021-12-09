@@ -54,10 +54,10 @@ def detail_foil_experiment(id):
     exper_instance = Foil_Experiments.query.filter(Foil_Experiments.id==id).first()
     irr_fn = exper_instance.irradiation_finished
     irr_time = exper_instance.irradiation_time
-    print(exper_instance.cd_ratio)
+    print(exper_instance.th_flux)    
     exper_instance.cd_ratio, exper_instance.th_flux, exper_instance.cd_ratios, exper_instance.th_fluxes = ratios_and_thfluxes_display(
         cd=exper_instance.cd_ratio, 
-        th_flux=exper_instance.th_flux)                                                                
+        th_flux=exper_instance.th_flux)                                                      
     if request.method == "POST":
         try:
             value = request.form["filter"]
@@ -131,11 +131,13 @@ def edit_foil_sample(id, sample_id):
         db.session.flush()
         cd_instances = Foil_Samples.query.filter(Foil_Samples.exp_id==id, Foil_Samples.cadmium_filter==True).all()
         bare_instances = Foil_Samples.query.filter(Foil_Samples.exp_id==id, Foil_Samples.cadmium_filter==False).all()
+        print(exper_instance.th_flux)
         if len(cd_instances) == 0 and len(bare_instances) > 0:
             cd_instances = exper_instance.cd_ratio
         exper_instance.cd_ratio, exper_instance.th_flux = ratios_and_thfluxes(foil_type=exper_instance.foil_type, 
                 cd=cd_instances, 
                 bare=bare_instances)
+        print(exper_instance.th_flux)
         db.session.commit()
         return redirect(url_for("foil.detail_foil_experiment", id=id))
     return render_template(f"{template_prefix}/edit-foil-sample.html", parent=exper_instance, data=sample_instance)
@@ -191,6 +193,14 @@ def delete_foil_sample(id, sample_id):
     if request.method == "POST":
         sample_instance = Foil_Samples.query.join(Foil_Experiments).filter(Foil_Experiments.id==id, Foil_Samples.id==sample_id).first()
         db.session.delete(sample_instance)
+        exper_instance = Foil_Experiments.query.filter(Foil_Experiments.id==id).first()
+        cd_instances = Foil_Samples.query.filter(Foil_Samples.exp_id==id, Foil_Samples.cadmium_filter==True).all()
+        bare_instances = Foil_Samples.query.filter(Foil_Samples.exp_id==id, Foil_Samples.cadmium_filter==False).all()
+        if len(cd_instances) == 0 and len(bare_instances) > 0:
+            cd_instances = exper_instance.cd_ratio
+        exper_instance.cd_ratio, exper_instance.th_flux = ratios_and_thfluxes(foil_type=exper_instance.foil_type, 
+                cd=cd_instances, 
+                bare=bare_instances)
         print(sample_instance)
         db.session.commit()
-        return redirect(url_for("foil.foil_experiments_list"))
+        return redirect(url_for("foil.detail_foil_experiment", id=id))

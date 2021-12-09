@@ -12,11 +12,10 @@ services:
       - PORT=${PORT}
       - HOST=${HOST}
       - DB=${DB}
-    expose:
-      - 5000
-    # ports:
-    #   - 5000:5000
-  
+    ports:
+      - 5000:5000
+    networks:
+      - flux_meas_net
   # lib:
   #   container_name: lib
   #   build: ./python/detec_lib
@@ -37,23 +36,27 @@ services:
       dockerfile: greet.Dockerfile
     environment:
       - FLASK_APP=app.py
-    expose:
-      - 5002
-    # ports:
-    #   - 5002:5002
-
-  
-  proxy:
-    build: ./nginx
-    restart: always
     ports:
-      - 80:80
+      - 5002:5002
+    networks:
+      - flux_meas_net
   
-  # golang:
-  #   container_name: go
-  #   build: ./api-builder
+  # proxy:
+  #   build: ./nginx
   #   restart: always
   #   ports:
-  #    - 8080:8080
+  #     - 80:80
+  #   networks:
+  #     - flux_meas_net
+  
+  api:
+    container_name: api
+    image: flux_meas_api
+    restart: always
+    ports:
+     - 8080:8080
+    networks:
+      - flux_meas_net
 
- 
+networks:
+  flux_meas_net: 

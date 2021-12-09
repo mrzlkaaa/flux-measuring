@@ -1,6 +1,7 @@
 import math
 import requests
 import json
+import itertools
 from datetime import datetime
 from collections import defaultdict
 from statistics import mean, StatisticsError
@@ -8,7 +9,8 @@ from statistics import mean, StatisticsError
 det_efficiency = lambda x: 7.50E+00*pow(x,-8.19E-01)
 conver_datetime = lambda x: datetime.fromisoformat(x)
 
-detector_params = lambda x: requests.get(f"http://localhost:8080/api/detector_params/nuclide/{x}").json()
+detector_params = lambda x: requests.get(f"http://api:8080/api/detector_params/nuclide/{x}").json()
+# detector_params = lambda x: requests.get(f"http://109.123.162.90:8080/api/detector_params/nuclide/{x}").json()
 
 def activity(*args, **kwargs):
     response = detector_params(kwargs["foil_type"])
@@ -39,10 +41,12 @@ def ratios_and_thfluxes(*args, **kwargs):
     try:
         aver_cd_rate = mean([i.reaction_rate for i in cd])
         cd_ratio = [i.reaction_rate/aver_cd_rate for i in bare]
+        thflux = [(i-1)*j/(response["Cross_section"]*1E-24*i) for i,j in zip(cd_ratio, [i.reaction_rate for i in bare])]
     except Exception as e:
         print(e)
         cd_ratio = [float(i) for i in cd.split(",")]
-    thflux = [(i-1)*j/(response["Cross_section"]*1E-24*i) for i,j in zip(cd_ratio, [i.reaction_rate for i in bare])]
+        cd_aver = mean(cd_ratio)
+        thflux = [((cd_aver-1)*i)/(response["Cross_section"]*1E-24*cd_aver) for i in [i.reaction_rate for i in bare]]
     ratios, th_fluxes = ",".join([str(i) for i in cd_ratio]), ",".join([str(i) for i in thflux])
     return ratios, th_fluxes
 

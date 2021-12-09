@@ -2,7 +2,7 @@ $(document).ready(function(){
     var myOpt = document.getElementsByClassName("form-select");
     var $select = $(".form-select");
     $.ajax({
-        url:"http://localhost:8080/api/detector_params",
+        url:"http://109.123.162.90:8080/api/detector_params",
         type:"GET",
         success: function(results) {
             console.log(results)
