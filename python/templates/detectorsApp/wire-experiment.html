@@ -69,7 +69,7 @@
 						<div class="row">
 							<div class="col" style="width:50%">
 								<label for="Mass" class="form-label">Mass</label>
-								<input name="Mass" class="form-control" type="number">
+								<input name="Mass" class="form-control" type="number" step="0.00001">
 							</div>
 							<div class="col" style="width:50%">
 							  <!-- <label for="Foil-type" class="form-label">Foil type</label>
@@ -117,7 +117,7 @@
 							<th scope="row">{{i.name}}</th>
 							<td>{{i.mass}}</td>
 							<td>{{'%0.2e' % i.activity}}</td>
-							<td><a href="{{url_for('wire.edit_wire_sample', id=data.id, sample_id=i.name)}}">Edit</a></td>
+							<td><a href="{{url_for('wire.edit_wire_sample', id=data.id, sample_name=i.name)}}">Edit</a></td>
 						  </tr>
 						</tbody>
 						{% endfor %}

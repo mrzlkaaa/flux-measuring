@@ -32,7 +32,7 @@ class Sample(db.Model):
     exp_id = db.Column(db.Integer, db.ForeignKey("experiment.id"))
 
     def __repr__(self):
-        return f"{self.__class__.__name__}<{self.id}>"
+        return f"{self.__class__.__name__}<{self.name}>"
 
 class Foil_Experiments(db.Model):
     __tablename__ = "foil_experiments"

@@ -3,7 +3,7 @@ $(document).ready(function(){
     console.log(path)
     id = path.pathname.split("/").slice(-1)
     $.ajax({
-        url:`http://localhost:8080/api/experiment/${id}`,
+        url:`http://109.123.162.90:8080/api/experiment/${id}`,
         type:"GET",
         success: function(results) {
             console.log(results)

@@ -33,8 +33,6 @@ def wire_experiments_list():
 
 @wire.route("/wire_experiment/<int:id>", methods=["GET", "POST"])
 def detail_wire_experiment(id):
-    r = requests.get("http://localhost:8080/api/detector_params/nuclide/AU-197") #TODO dont forget to test internal call
-    print(r.json())
     exper_instance = Experiment.query.filter(Experiment.id==int(id)).first()
     irr_fn = exper_instance.irradiation_finished
     irr_time = exper_instance.irradiation_time
@@ -63,9 +61,9 @@ def edit_wire_experiment(id):
         return redirect(url_for("wire.detail_wire_experiment", id=id))
     return render_template(f"{template_prefix}/edit-wire-experiment.html", data=exper_instance, irradiation_started=started_time)
 
-@wire.route("/edit_wire_experiment/<id>/<sample_id>", methods=["GET", "POST"])
-def edit_wire_sample(id, sample_id):
-    sample_instance = Sample.query.join(Experiment).filter(Experiment.id==int(id), Sample.name==int(sample_id)).first()
+@wire.route("/edit_wire_experiment/<id>/<sample_name>", methods=["GET", "POST"])
+def edit_wire_sample(id, sample_name):
+    sample_instance = Sample.query.join(Experiment).filter(Experiment.id==int(id), Sample.name==int(sample_name)).first()
     if request.method == "POST":
         exper_instance = Experiment.query.filter(Experiment.id==int(id)).first()
         irr_fn = exper_instance.irradiation_finished
@@ -116,7 +114,7 @@ def export_wire_experiment(name):
                     wsh.write_column(2, num, i, datetime_format)
         return send_from_directory(app.config["DOWNLOAD_FOLDER"], "export.xlsx", as_attachment=True)
 
-@wire.route("/<id>/delete", methods=["GET","POST"])
+@wire.route("/<int:id>/delete", methods=["GET","POST"])
 def delete_wire_experiment(name):
     if request.method == "POST":
         instance = Experiment.query.filter(Experiment.id==int(id)).first()
@@ -125,10 +123,10 @@ def delete_wire_experiment(name):
         db.session.commit()
         return redirect(url_for("wire.wire_experiments_list"))
 
-@wire.route("/<id>/<sample_id>/delete", methods=["GET","POST"])
-def delete_wire_sample(id, sample_id):
+@wire.route("/<int:id>/<int:sample_name>/delete", methods=["GET","POST"])
+def delete_wire_sample(id, sample_name):
     if request.method == "POST":
-        sample_instance = Sample.query.join(Experiment).filter(Experiment.id==int(id), Sample.name==int(sample_id)).first()
+        sample_instance = Sample.query.join(Experiment).filter(Experiment.id==int(id), Sample.name==sample_name).first()
         db.session.delete(sample_instance)
         print(sample_instance)
         db.session.commit()
