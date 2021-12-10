@@ -3,7 +3,7 @@ $(document).ready(function(){
     var existing_value = document.getElementsByClassName("form-select");
     var $select = $(".form-select");
     $.ajax({
-        url:`http://localhost:8080/api/foil_detectors/${type}`,
+        url:`http://109.123.162.90:8080/api/foil_detectors/${type}`,
         type:"GET",
         success: function(results) {
             console.log(results)
