@@ -179,7 +179,7 @@ def export_foil_experiment(id):
                     wsh.write_column(2, num, i, datetime_format)
         return send_from_directory(app.config["DOWNLOAD_FOLDER"], file_name, as_attachment=True)
 
-@foil.route("/<int:id>/delete", methods=["GET","POST"])
+@foil.route("/<int:id>/fedelete", methods=["GET","POST"])
 def delete_foil_experiment(id):
     if request.method == "POST":
         instance = Foil_Experiments.query.filter(Foil_Experiments.id==id).first()
@@ -188,10 +188,11 @@ def delete_foil_experiment(id):
         db.session.commit()
         return redirect(url_for("foil.foil_experiments_list"))
 
-@foil.route("/<int:id>/<int:sample_id>/delete", methods=["GET","POST"])
+@foil.route("/<int:id>/<int:sample_id>/fsdelete", methods=["GET","POST"])
 def delete_foil_sample(id, sample_id):
     if request.method == "POST":
         sample_instance = Foil_Samples.query.join(Foil_Experiments).filter(Foil_Experiments.id==id, Foil_Samples.id==sample_id).first()
+        print(sample_instance)
         db.session.delete(sample_instance)
         exper_instance = Foil_Experiments.query.filter(Foil_Experiments.id==id).first()
         cd_instances = Foil_Samples.query.filter(Foil_Samples.exp_id==id, Foil_Samples.cadmium_filter==True).all()

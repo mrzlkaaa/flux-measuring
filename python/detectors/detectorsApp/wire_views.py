@@ -114,8 +114,8 @@ def export_wire_experiment(name):
                     wsh.write_column(2, num, i, datetime_format)
         return send_from_directory(app.config["DOWNLOAD_FOLDER"], "export.xlsx", as_attachment=True)
 
-@wire.route("/<int:id>/delete", methods=["GET","POST"])
-def delete_wire_experiment(name):
+@wire.route("/<int:id>/wedelete", methods=["GET","POST"])
+def delete_wire_experiment(id):
     if request.method == "POST":
         instance = Experiment.query.filter(Experiment.id==int(id)).first()
         db.session.delete(instance)
@@ -123,7 +123,7 @@ def delete_wire_experiment(name):
         db.session.commit()
         return redirect(url_for("wire.wire_experiments_list"))
 
-@wire.route("/<int:id>/<int:sample_name>/delete", methods=["GET","POST"])
+@wire.route("/<int:id>/<int:sample_name>/wsdelete", methods=["GET","POST"])
 def delete_wire_sample(id, sample_name):
     if request.method == "POST":
         sample_instance = Sample.query.join(Experiment).filter(Experiment.id==int(id), Sample.name==sample_name).first()
