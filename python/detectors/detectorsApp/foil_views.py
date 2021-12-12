@@ -53,6 +53,7 @@ def foil_experiments_list():
 def detail_foil_experiment(id):
     exper_instance = Foil_Experiments.query.filter(Foil_Experiments.id==id).first()
     irr_fn = exper_instance.irradiation_finished
+    print(irr_fn)
     irr_time = exper_instance.irradiation_time
     print(exper_instance.th_flux)    
     exper_instance.cd_ratio, exper_instance.th_flux, exper_instance.cd_ratios, exper_instance.th_fluxes = ratios_and_thfluxes_display(

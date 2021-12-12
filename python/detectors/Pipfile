@@ -15,6 +15,7 @@ XlsxWriter = "*"
 Flask-Cors = "*"
 gunicorn = "*"
 requests = "*"
+pytest = "*"
 
 [dev-packages]
 
