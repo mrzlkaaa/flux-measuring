@@ -55,8 +55,9 @@ def detail_foil_experiment(id):
     irr_fn = exper_instance.irradiation_finished
     print(irr_fn)
     irr_time = exper_instance.irradiation_time
-    print(exper_instance.th_flux)    
-    exper_instance.cd_ratio, exper_instance.th_flux, exper_instance.cd_ratios, exper_instance.th_fluxes = ratios_and_thfluxes_display(
+    print(exper_instance.th_flux)
+    print(exper_instance.cd_ratio)
+    cd_ratio, th_flux, exper_instance.cd_ratios, exper_instance.th_fluxes = ratios_and_thfluxes_display(
         cd=exper_instance.cd_ratio, 
         th_flux=exper_instance.th_flux)                                                      
     if request.method == "POST":
@@ -78,18 +79,22 @@ def detail_foil_experiment(id):
                                         cadmium_filter=fltr, expermt=exper_instance)
         db.session.add(add_sub_instance)
         db.session.flush()
+        exper_instance = Foil_Experiments.query.filter(Foil_Experiments.id==id).first()
+        print(f"new call for cd_ratio - {exper_instance.cd_ratio}")
         cd_instances = Foil_Samples.query.filter(Foil_Samples.exp_id==id, Foil_Samples.cadmium_filter==True).all()
         bare_instances = Foil_Samples.query.filter(Foil_Samples.exp_id==id, Foil_Samples.cadmium_filter==False).all()
         print(len(bare_instances))
-        if len(cd_instances) == 0 and len(bare_instances) > 0:
-            cd_instances = ",".join([str(i) for i in exper_instance.cd_ratios])
+        if len(cd_instances) == 0 and len(bare_instances) != 0 and len(exper_instance.cd_ratio)>0:
+            cd_instances = exper_instance.cd_ratio.split(',')
         exper_instance.cd_ratio, exper_instance.th_flux = ratios_and_thfluxes(foil_type=exper_instance.foil_type, 
                 cd=cd_instances, 
                 bare=bare_instances)
         # print(exper_instance)
         db.session.commit()
         return redirect(url_for("foil.detail_foil_experiment", id=id))
-    return render_template(f"{template_prefix}/foil-experiment.html", data=exper_instance)
+    return render_template(f"{template_prefix}/foil-experiment.html", 
+        cd_ratio=cd_ratio, th_flux=th_flux,
+        data=exper_instance)
 
 @foil.route("/edit_foil_experiment/<int:id>", methods=["GET", "POST"])
 def edit_foil_experiment(id):
@@ -134,7 +139,7 @@ def edit_foil_sample(id, sample_id):
         bare_instances = Foil_Samples.query.filter(Foil_Samples.exp_id==id, Foil_Samples.cadmium_filter==False).all()
         print(exper_instance.th_flux)
         if len(cd_instances) == 0 and len(bare_instances) > 0:
-            cd_instances = exper_instance.cd_ratio
+            cd_instances = exper_instance.cd_ratio.split(',')
         exper_instance.cd_ratio, exper_instance.th_flux = ratios_and_thfluxes(foil_type=exper_instance.foil_type, 
                 cd=cd_instances, 
                 bare=bare_instances)

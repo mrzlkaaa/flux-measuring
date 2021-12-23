@@ -38,12 +38,17 @@ def ratios_and_thfluxes(*args, **kwargs):
     response = detector_params(kwargs["foil_type"])
     cd, bare = kwargs["cd"], kwargs["bare"]
     try:
+        print(cd)
         aver_cd_rate = mean([i.reaction_rate for i in cd])
         cd_ratio = [i.reaction_rate/aver_cd_rate for i in bare]
         thflux = [(i-1)*j/(response["Cross_section"]*1E-24*i) for i,j in zip(cd_ratio, [i.reaction_rate for i in bare])]
-    except Exception as e:
-        print(e)
-        cd_ratio = [float(i) for i in cd.split(",")]
+        print(thflux)
+    except StatisticsError as e:
+        return 0, 0
+    except AttributeError as e: #AttributeError
+        print(f"captured {e}")
+        cd_ratio = [float(i) for i in cd]
+        print(cd_ratio)
         cd_aver = mean(cd_ratio)
         thflux = [((cd_aver-1)*i)/(response["Cross_section"]*1E-24*cd_aver) for i in [i.reaction_rate for i in bare]]
     ratios, th_fluxes = ",".join([str(i) for i in cd_ratio]), ",".join([str(i) for i in thflux])
@@ -54,6 +59,6 @@ def ratios_and_thfluxes_display(*args, **kwargs):
         cds, th_fluxes = [float(i) for i in kwargs["cd"].split(",")], [float(i) for i in kwargs["th_flux"].split(",")]
         mean_cds, mean_th_fluxes = mean(cds), mean(th_fluxes)
     except Exception as e:
-        print(e)
+        print(f"Exception from {__name__} - {e}")
         return 0, 0, [0], [0]
     return mean_cds, mean_th_fluxes, cds, th_fluxes

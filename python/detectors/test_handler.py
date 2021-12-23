@@ -2,7 +2,7 @@ import pytest
 import requests
 from datetime import datetime
 from detectorsApp import handler, create_app
-from detectorsApp.models import Foil_Experiments, Foil_Samples
+from detectorsApp.models import db, Foil_Experiments, Foil_Samples
 
 @pytest.fixture
 def client():
@@ -32,8 +32,8 @@ def test_reaction_rate():
     assert type(meas_time) == float
     assert 1E-14 < rate > 1E-15
 
-
-def test_ratios_and_thfluxes(client, id=2):
+#* test case is when bare and Cd lists aren't empty
+def test_ratios_and_thfluxes(client, id=7):
     cd_instances = Foil_Samples.query.filter(
         Foil_Samples.exp_id==id, 
         Foil_Samples.cadmium_filter==True).all()  
@@ -62,3 +62,41 @@ def test_ratios_and_thfluxes_dispay2(client, id=1):
     assert type(th_flux) == int
     assert len(cd_ratios) == 1
     assert len(th_fluxes) == 1
+
+#* test case when cd_ratio EXISTS
+def test_ratios_and_thfluxesCD(client, id=10):
+    exper_instance = Foil_Experiments.query.filter(Foil_Experiments.id==id).first()
+    cd_instances = Foil_Samples.query.filter(
+        Foil_Samples.exp_id==id, 
+        Foil_Samples.cadmium_filter==True).all()  
+    bare_instances = Foil_Samples.query.filter(
+        Foil_Samples.exp_id==id, 
+        Foil_Samples.cadmium_filter==False).all()
+    if len(cd_instances) == 0 and exper_instance.cd_ratio is not None:
+        cd_instances = exper_instance.cd_ratio.split(",")
+    cd_ratio, th_flux = handler.ratios_and_thfluxes(foil_type="AU-197", 
+        cd=cd_instances, 
+        bare=bare_instances)
+    assert type(cd_ratio) == str
+    assert type(th_flux) == str
+
+#* test case when only cd list is empy and there is NO cd_ratio
+def test_ratios_and_thfluxesNoCD(client, id=8):
+    exper_instance = Foil_Experiments.query.filter(Foil_Experiments.id==id).first()  
+    add_sub_instance = Foil_Samples(name="3CU/200", nucleus_number=1.59E20, 
+                            cooling_finished="12/21/2021  1:40:00 PM", area=10873, 
+                            cooling_time=60360, measuring_time=300, reaction_rate=2.02E15, 
+                            cadmium_filter=False, expermt=exper_instance)
+    db.session.add(add_sub_instance)
+    db.session.flush()
+    cd_instances = Foil_Samples.query.filter(
+        Foil_Samples.exp_id==id, 
+        Foil_Samples.cadmium_filter==True).all()
+    bare_instances = Foil_Samples.query.filter(
+        Foil_Samples.exp_id==id, 
+        Foil_Samples.cadmium_filter==False).all()
+    cd_ratio, th_flux = handler.ratios_and_thfluxes(foil_type="AU-197", 
+        cd=cd_instances, 
+        bare=bare_instances)
+    assert type(cd_ratio) == int
+    assert type(th_flux) == int
